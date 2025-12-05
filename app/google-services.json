@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "692051298480",
+    "project_id": "music-box-app-2309",
+    "storage_bucket": "music-box-app-2309.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692051298480:android:b6495a80748f5a988b5375",
+        "android_client_info": {
+          "package_name": "com.aicloudflare.musicbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAarZyrcVjBKqIhz4rp07HMai_V7IlDkgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692051298480:android:8c706cd1111421d78b5375",
+        "android_client_info": {
+          "package_name": "com.finalexam.musicboxx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAarZyrcVjBKqIhz4rp07HMai_V7IlDkgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
