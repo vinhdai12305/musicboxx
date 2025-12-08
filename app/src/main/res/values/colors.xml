@@ -10,5 +10,15 @@
     <color name="orange_outside">#FF8D28</color>
     <color name="orange_inside">#FBEEE2</color>
     <color name="history_search">#626262</color>
+    <color name="app_background">#FFFFFF</color>
+    <color name="text_primary">#000000</color>
+    <color name="bottom_nav_bg">#FFFFFF</color>
+    <color name="dialog_bg">#FFFFFF</color>
+    <color name="divider_color">#EEEEEE</color>
+    <color name="text_secondary">#808080</color>
+
+    <color name="music_orange">#FF6D00</color>
+    <color name="music_black_bg">#0F0F0F</color>
+    <color name="music_text_grey">#B0B0B0</color>
 
 </resources>
