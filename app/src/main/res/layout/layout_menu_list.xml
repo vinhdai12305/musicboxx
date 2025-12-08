@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- BACKUP -->
+    <TextView
+        android:id="@+id/lblBackup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/backup"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowBackup" />
+
+    <TextView
+        android:id="@+id/arrowBackup"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="@color/text_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblBackup"
+        app:layout_constraintBottom_toBottomOf="@id/lblBackup" />
+
+    <View
+        android:id="@+id/tvBackup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblBackup"
+        app:layout_constraintBottom_toBottomOf="@id/lblBackup" />
+
+
+    <!-- NOTIFICATION -->
+    <TextView
+        android:id="@+id/lblNotification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/notification"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblBackup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowNotification" />
+
+    <TextView
+        android:id="@+id/arrowNotification"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="@color/text_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblNotification"
+        app:layout_constraintBottom_toBottomOf="@id/lblNotification" />
+
+    <View
+        android:id="@+id/tvNotification"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblNotification"
+        app:layout_constraintBottom_toBottomOf="@id/lblNotification" />
+
+
+    <!-- LANGUAGE -->
+    <TextView
+        android:id="@+id/lblLanguage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/language"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblNotification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvLanguageValue" />
+
+    <TextView
+        android:id="@+id/tvLanguageValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/language_english_us"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/arrowLanguage"
+        app:layout_constraintTop_toTopOf="@id/lblLanguage"
+        app:layout_constraintBottom_toBottomOf="@id/lblLanguage" />
+
+    <TextView
+        android:id="@+id/arrowLanguage"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="@color/text_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblLanguage"
+        app:layout_constraintBottom_toBottomOf="@id/lblLanguage" />
+
+    <View
+        android:id="@+id/tvLanguage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblLanguage"
+        app:layout_constraintBottom_toBottomOf="@id/lblLanguage" />
+
+
+    <!-- DARK MODE -->
+    <TextView
+        android:id="@+id/lblDarkMode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/dark_mode"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblLanguage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowDarkMode" />
+
+    <TextView
+        android:id="@+id/arrowDarkMode"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="@color/text_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblDarkMode"
+        app:layout_constraintBottom_toBottomOf="@id/lblDarkMode" />
+
+    <View
+        android:id="@+id/tvDarkMode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblDarkMode"
+        app:layout_constraintBottom_toBottomOf="@id/lblDarkMode" />
+
+    <TextView
+        android:id="@+id/lblShareApp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/share_app"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblDarkMode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowShareApp" />
+
+    <TextView
+        android:id="@+id/arrowShareApp"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="#808080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblShareApp"
+        app:layout_constraintBottom_toBottomOf="@id/lblShareApp"/>
+
+    <View
+        android:id="@+id/tvShareApp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblShareApp"
+        app:layout_constraintBottom_toBottomOf="@id/lblShareApp" />
+
+
+    <TextView
+        android:id="@+id/lblChangeLog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/change_log"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblShareApp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowChangeLog" />
+
+    <TextView
+        android:id="@+id/arrowChangeLog"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="#808080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblChangeLog"
+        app:layout_constraintBottom_toBottomOf="@id/lblChangeLog"/>
+
+    <View
+        android:id="@+id/tvChangeLog"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblChangeLog"
+        app:layout_constraintBottom_toBottomOf="@id/lblChangeLog" />
+
+
+    <TextView
+        android:id="@+id/lblPrivacy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_policy"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblChangeLog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowPrivacy" />
+
+    <TextView
+        android:id="@+id/arrowPrivacy"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="#808080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblPrivacy"
+        app:layout_constraintBottom_toBottomOf="@id/lblPrivacy"/>
+
+    <View
+        android:id="@+id/tvPrivacy"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblPrivacy"
+        app:layout_constraintBottom_toBottomOf="@id/lblPrivacy" />
+
+
+    <TextView
+        android:id="@+id/lblFAQ"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/faq"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/lblPrivacy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowFAQ" />
+
+    <TextView
+        android:id="@+id/arrowFAQ"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="#808080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblFAQ"
+        app:layout_constraintBottom_toBottomOf="@id/lblFAQ"/>
+
+    <View
+        android:id="@+id/tvFAQ"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblFAQ"
+        app:layout_constraintBottom_toBottomOf="@id/lblFAQ" />
+
+
+    <TextView
+        android:id="@+id/lblQuit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/quit"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:paddingVertical="16dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintTop_toBottomOf="@id/lblFAQ"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowQuit"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/arrowQuit"
+        android:text=">"
+        android:textSize="18sp"
+        android:textColor="#808080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblQuit"
+        app:layout_constraintBottom_toBottomOf="@id/lblQuit"/>
+
+    <View
+        android:id="@+id/tvQuit"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lblQuit"
+        app:layout_constraintBottom_toBottomOf="@id/lblQuit" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
