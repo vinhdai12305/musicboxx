@@ -2,10 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
-        android:name=".MusicBoxApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,33 +12,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicBox">
 
-        <!-- Language Activity -->
+        <!-- 1. Activity khởi chạy chính (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
         <activity
-            android:name=".Settings.LanguageActivity"
-            android:exported="false" />
-
-        <!-- Notification Activity -->
-        <activity
-            android:name=".Settings.NotificationActivity"
-            android:exported="false" />
-
-        <!-- SETTINGS ACTIVITY LÀ MÀN HÌNH CHÍNH -->
-        <activity
-            android:name=".Settings.SettingsActivity"
+            android:name=".homescreen.MainActivity2"
             android:exported="true">
-
-            <!-- Đặt MAIN + LAUNCHER bên trong activity -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
-        <!-- MainActivity KHÔNG còn là Activity khởi động -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+        <!-- 2. Khai báo các Activity khác (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
+        <activity android:name=".homescreen.SettingsActivity" android:exported="false" />
+        <activity android:name=".homescreen.FavoritesActivity" android:exported="false" />
+        <activity android:name=".homescreen.PlaylistsActivity" android:exported="false" />
+        <activity android:name=".homescreen.NotificationActivities" android:exported="false" />
+        <activity android:name=".homescreen.LanguageActivities" android:exported="false" />
+
     </application>
 
 </manifest>

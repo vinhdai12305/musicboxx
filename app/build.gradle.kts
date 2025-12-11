@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.finalexam.musicboxx"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -58,4 +58,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.activity:activity-ktx:1.8.2")
+// Đảm bảo bạn đang dùng phiên bản AndroidX mới nhất
+    implementation("androidx.core:core-ktx:1.12.0")
+// Phiên bản mới nhất
+    implementation("androidx.appcompat:appcompat:1.6.1")
 }
