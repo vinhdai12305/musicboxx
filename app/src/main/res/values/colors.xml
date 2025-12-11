@@ -10,5 +10,6 @@
     <color name="orange_outside">#FF8D28</color>
     <color name="orange_inside">#FBEEE2</color>
     <color name="history_search">#626262</color>
+    <color name="placeholder_background">#E0E0E0</color>
 
 </resources>
