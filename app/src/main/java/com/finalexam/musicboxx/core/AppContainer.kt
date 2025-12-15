@@ -5,7 +5,8 @@ import com.finalexam.musicboxx.data.repository.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class AppContainer(private val context: Context) {
+class
+AppContainer(private val context: Context) {
 
     // Khởi tạo các instance Firebase (Lazy để tiết kiệm)
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
