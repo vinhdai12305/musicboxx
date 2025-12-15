@@ -1,9 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Musicboxx" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Base.Theme.MusicBox" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.Musicboxx" parent="Base.Theme.Musicboxx" />
+    <style name="Theme.MusicBox" parent="Base.Theme.MusicBox" />
+
+
+    <style name="RadioButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:buttonTint">#FF9800</item>
+        <item name="buttonTint">#FF9800</item>
+        <item name="android:layoutDirection">rtl</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
 </resources>
