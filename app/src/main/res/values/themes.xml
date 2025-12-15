@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.Theme.MusicBox" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.musicboxx" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.MusicBox" parent="Base.Theme.MusicBox" />
+    <style name="Theme.musicboxx" parent="Base.Theme.musicboxx" />
 
 
     <style name="RadioButtonStyle">
