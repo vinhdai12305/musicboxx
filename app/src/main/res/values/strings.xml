@@ -36,4 +36,6 @@
     <string name="choose_theme">Choose Theme</string>
     <string name="theme_light">Light Mode</string>
     <string name="theme_dark">Dark Mode</string>
+    <string name="song_count_format">%d songs</string>
+
 </resources>

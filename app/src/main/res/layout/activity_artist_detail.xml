@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    tools:context=".activity.ArtistDetailActivity">
+
+    <!-- Thanh Toolbar ở trên cùng -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_back"
+            app:title=" "> <!-- Để trống title -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/menu_search"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_search"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/menu_more"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_more_vert"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Nội dung có thể cuộn -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <!-- Ảnh nghệ sĩ lớn -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/artist_image_detail"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedImageStyle"
+                tools:src="@drawable/bray" />
+
+            <!-- Tên nghệ sĩ -->
+            <TextView
+                android:id="@+id/artist_name_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                tools:text="Dương Domic" />
+
+            <!-- Thông tin (số album, số bài hát, thời lượng) -->
+            <TextView
+                android:id="@+id/artist_stats_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="14sp"
+                tools:text="1 Albums   |   5 Songs   |   00:15:23 mins" />
+
+            <!-- Nút Shuffle và Play -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="32dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_shuffle"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FF8D28"
+                    android:text="Shuffle"
+                    app:cornerRadius="28dp"
+                    app:icon="@drawable/ic_shuffle"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_play"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="Play"
+                    android:textColor="#FF8D28"
+                    app:cornerRadius="28dp"
+                    app:icon="@drawable/play_circle_24"
+                    app:iconTint="#FF8D28"
+                    app:iconGravity="textStart"
+                    app:strokeColor="#FFE0B2" />
+
+            </LinearLayout>
+
+            <!-- Phần danh sách bài hát -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    style="@style/SectionHeaderTextStyle"
+                    android:layout_centerVertical="true"
+                    android:text="Songs" />
+
+                <TextView
+                    android:id="@+id/see_all_button"
+                    style="@style/SeeAllButtonStyle"
+                    android:text="See all" />
+            </RelativeLayout>
+
+            <!-- RecyclerView để hiển thị danh sách bài hát -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/songs_recycler_view_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_song_simple" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
