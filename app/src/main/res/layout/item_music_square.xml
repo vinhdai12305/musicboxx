@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginEnd="16dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/album_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/khong_thoi_gian" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/song_title"
+        style="@style/ItemTitleStyle"
+        android:layout_width="match_parent"
+        tools:text="Không Thời Gian - Dương..." />
+
+    <TextView
+        android:id="@+id/artist_name_small"
+        style="@style/ItemSubtitleStyle"
+        android:layout_width="match_parent"
+        tools:text="Hnghle &amp; Ari" />
+</LinearLayout>
