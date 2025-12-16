@@ -15,14 +15,24 @@
         android:theme="@style/Theme.Musicboxx">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.aicloudflare.musicbox.playlist.AddSongsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.aicloudflare.musicbox.PlaylistDetailActivity.PlaylistDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
