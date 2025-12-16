@@ -26,6 +26,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.aicloudflare.musicbox.playlist.AddSongsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.aicloudflare.musicbox.PlaylistDetailActivity.PlaylistDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
 
         <activity
             android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
