@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rounded"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <!-- Sử dụng RadioGroup để đảm bảo chỉ có một lựa chọn được chọn tại một thời điểm -->
+    <RadioGroup
+        android:id="@+id/sortRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Lựa chọn 1: Ascending -->
+        <RadioButton
+            android:id="@+id/rbAscending"
+            style="@style/RadioButtonStyle"
+            android:checked="true"
+            android:text="Ascending"
+            android:textColor="#FF8D28"
+            android:textStyle="bold" />
+
+        <!-- Lựa chọn 2: Descending -->
+        <RadioButton
+            android:id="@+id/rbDescending"
+            style="@style/RadioButtonStyle"
+            android:text="Descending" />
+
+        <!-- Dòng kẻ ngang -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="#F0F0F0" />
+
+        <!-- Lựa chọn 3: Artist -->
+        <RadioButton
+            android:id="@+id/rbArtist"
+            style="@style/RadioButtonStyle"
+            android:text="Artist" />
+
+        <!-- Lựa chọn 4: Album -->
+        <RadioButton
+            android:id="@+id/rbAlbum"
+            style="@style/RadioButtonStyle"
+            android:text="Album" />
+
+        <!-- Lựa chọn 5: Year -->
+        <RadioButton
+            android:id="@+id/rbYear"
+            style="@style/RadioButtonStyle"
+            android:text="Year" />
+
+        <!-- Lựa chọn 6: Date Added -->
+        <RadioButton
+            android:id="@+id/rbDateAdded"
+            style="@style/RadioButtonStyle"
+            android:text="Date Added" />
+
+        <!-- Lựa chọn 7: Date Modified -->
+        <RadioButton
+            android:id="@+id/rbDateModified"
+            style="@style/RadioButtonStyle"
+            android:text="Date Modified" />
+
+        <!-- Lựa chọn 8: Composer -->
+        <RadioButton
+            android:id="@+id/rbComposer"
+            style="@style/RadioButtonStyle"
+            android:text="Composer" />
+
+    </RadioGroup>
+
+</LinearLayout>

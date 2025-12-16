@@ -1,7 +1,7 @@
 package com.finalexam.musicboxx.data.repository
 
 import com.finalexam.musicboxx.data.model.Playlist
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.model.Song
 import com.finalexam.musicboxx.utils.Resource
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth

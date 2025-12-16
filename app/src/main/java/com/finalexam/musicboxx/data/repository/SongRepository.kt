@@ -1,7 +1,7 @@
 package com.finalexam.musicboxx.data.repository
 
 import android.util.Log
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.model.Song
 import com.finalexam.musicboxx.utils.Resource
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
