@@ -5,86 +5,146 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.adapter.ArtistCircleAdapter
 import com.finalexam.musicboxx.adapter.MusicSquareAdapter
-import com.finalexam.musicboxx.model.ArtistItem
+import com.finalexam.musicboxx.adapter.ArtistCircleAdapter
+import com.finalexam.musicboxx.data.repository.SongRepository
+import com.finalexam.musicboxx.data.repository.ArtistRepository
 import com.finalexam.musicboxx.model.MusicItem
+import com.finalexam.musicboxx.model.Song
+import com.finalexam.musicboxx.model.ArtistItem
+import com.finalexam.musicboxx.utils.Resource
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 class SuggestedFragment : Fragment() {
 
+    // ===============================
+    // REPOSITORIES (SOURCE OF TRUTH)
+    // ===============================
+    private val songRepository by lazy {
+        SongRepository(FirebaseFirestore.getInstance())
+    }
+
+    private val artistRepository by lazy {
+        ArtistRepository(FirebaseFirestore.getInstance())
+    }
+
+    // ===============================
+    // ADAPTERS
+    // ===============================
+    private lateinit var recentAdapter: MusicSquareAdapter
+    private lateinit var mostPlayedAdapter: MusicSquareAdapter
+    private lateinit var artistAdapter: ArtistCircleAdapter
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Kết nối với layout của riêng fragment này
+    ): View {
         return inflater.inflate(R.layout.fragment_suggested, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- SETUP RECYCLERVIEW ---
-        // Gọi các hàm thiết lập cho từng RecyclerView
-        setupRecentlyPlayed(view)
-        setupArtists(view)
-        setupMostPlayed(view)
+        setupRecyclerViews(view)
+        loadHomeData()
     }
 
-    // --- CÁC HÀM THIẾT LẬP RECYCLERVIEW ---
-    private fun setupRecentlyPlayed(view: View) {
-        val recycler: RecyclerView = view.findViewById(R.id.recycler_recently_played)
-        recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        // SỬA Ở ĐÂY: Thêm tên tham số "musicList ="
-        val adapter = MusicSquareAdapter(musicList = createDummyMusicData())
-        recycler.adapter = adapter
+    // ===============================
+    // SETUP RECYCLERVIEWS (NO DATA)
+    // ===============================
+    private fun setupRecyclerViews(view: View) {
+
+        // Recently Played
+        recentAdapter = MusicSquareAdapter(emptyList())
+        view.findViewById<RecyclerView>(R.id.recycler_recently_played).apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = recentAdapter
+        }
+
+        // Most Played
+        mostPlayedAdapter = MusicSquareAdapter(emptyList())
+        view.findViewById<RecyclerView>(R.id.recycler_most_played).apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = mostPlayedAdapter
+        }
+
+        // Artists
+        artistAdapter = ArtistCircleAdapter(emptyList())
+        view.findViewById<RecyclerView>(R.id.recycler_artists).apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = artistAdapter
+        }
     }
 
-    private fun setupArtists(view: View) {
-        val recycler: RecyclerView = view.findViewById(R.id.recycler_artists)
-        recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        // SỬA Ở ĐÂY: Thêm tên tham số "artistList =" (hoặc tên tương ứng trong adapter của bạn)
-        val adapter = ArtistCircleAdapter(artistList = createDummyArtistData())
-        recycler.adapter = adapter
+    // ===============================
+    // LOAD DATA FROM REPOSITORIES
+    // ===============================
+    private fun loadHomeData() {
+
+        // Recently Played (tạm dùng all songs)
+        lifecycleScope.launch {
+            when (val result = songRepository.getAllSongs()) {
+                is Resource.Success -> {
+                    recentAdapter.updateData(
+                        mapSongsToMusicItems(result.data ?: emptyList())
+                    )
+                }
+                is Resource.Error -> {
+                    // TODO: show error nếu cần
+                }
+                else -> {}
+            }
+        }
+
+        // Most Played (Trending)
+        lifecycleScope.launch {
+            when (val result = songRepository.getTrendingSongs()) {
+                is Resource.Success -> {
+                    mostPlayedAdapter.updateData(
+                        mapSongsToMusicItems(result.data ?: emptyList())
+                    )
+                }
+                is Resource.Error -> {
+                    // TODO: show error nếu cần
+                }
+                else -> {}
+            }
+        }
+
+        // Artists
+        lifecycleScope.launch {
+            when (val result = artistRepository.getAllArtists()) {
+                is Resource.Success -> {
+                    artistAdapter.updateData(result.data ?: emptyList())
+                }
+                is Resource.Error -> {
+                    // TODO: show error nếu cần
+                }
+                else -> {}
+            }
+        }
     }
 
-    private fun setupMostPlayed(view: View) {
-        val recycler: RecyclerView = view.findViewById(R.id.recycler_most_played)
-        recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        // SỬA Ở ĐÂY: Thêm tên tham số "musicList ="
-        val adapter = MusicSquareAdapter(musicList = createDummyMostPlayedData())
-        recycler.adapter = adapter
-    }
-
-    // --- CÁC HÀM TẠO DỮ LIỆU GIẢ (GIỮ NGUYÊN) ---
-    private fun createDummyMusicData(): List<MusicItem> {
-        val data = mutableListOf<MusicItem>()
-        // SỬA LỖI: Chuyển ID thành String bằng .toString() và đảm bảo các tham số có tên
-        data.add(MusicItem(id = "1", title = "Không Thời Gian", artist = "Dương Domic", imageResource = R.drawable.khong_thoi_gian))
-        data.add(MusicItem(id = "2", title = "Đánh Đổi", artist = "Obito", imageResource = R.drawable.danh_doi))
-        data.add(MusicItem(id = "3", title = "Năm Ấy", artist = "Đức Phúc", imageResource = R.drawable.nam_ay))
-        data.add(MusicItem(id = "4", title = "Còn Gì Đẹp Hơn", artist = "Nguyễn Hùng", imageResource = R.drawable.con_gi_dep_hon))
-        return data
-    }
-
-    private fun createDummyArtistData(): List<ArtistItem> {
-        val data = mutableListOf<ArtistItem>()
-        data.add(ArtistItem(id = "101", name = "Rhymastic", imageResource = R.drawable.rhym, albumCount = 0, songCount = 0))
-        data.add(ArtistItem(id = "102", name = "Bray", imageResource = R.drawable.bray, albumCount = 0, songCount = 0))
-        data.add(ArtistItem(id = "103", name = "Huslang Robber", imageResource = R.drawable.robber, albumCount = 0, songCount = 0))
-        data.add(ArtistItem(id = "104", name = "MCK", imageResource = R.drawable.mck, albumCount = 0, songCount = 0))
-        return data
-    }
-
-    private fun createDummyMostPlayedData(): List<MusicItem> {
-        val data = mutableListOf<MusicItem>()
-        // SỬA LỖI: Chuyển ID thành String bằng .toString() và đảm bảo các tham số có tên
-        data.add(MusicItem(id = "201", title = "Ghé Qua", artist = "Dick & PC & Tofu", imageResource = R.drawable.ghe_qua))
-        data.add(MusicItem(id = "202", title = "Còn Gì Đẹp Hơn", artist = "Nguyễn Hùng", imageResource = R.drawable.con_gi_dep_hon))
-        data.add(MusicItem(id = "203", title = "Y6U", artist = "Nghệ sĩ", imageResource = R.drawable.y6u))
-        data.add(MusicItem(id = "204", title = "1000 Ánh Mắt", artist = "Shiki", imageResource = R.drawable.anhmat))
-        return data
+    // ===============================
+    // MAP DOMAIN → UI MODEL
+    // ===============================
+    private fun mapSongsToMusicItems(songs: List<Song>): List<MusicItem> {
+        return songs.map { song ->
+            MusicItem(
+                id = song.id ?: "",
+                title = song.title ?: "",
+                artist = song.artist ?: "",
+                imageResource = R.drawable.ic_launcher_foreground
+            )
+        }
     }
 }
