@@ -1,8 +1,14 @@
 package com.finalexam.musicboxx.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+// THÊM @Parcelize VÀ IMPLEMENT Parcelable
+@Parcelize
 data class ArtistItem(
-    // Sử dụng 'val' để khai báo các thuộc tính (tương đương với final fields và public getters trong Java)
-    val id: Int,
+    val id: String,
     val name: String,
-    val imageResource: Int // Lưu trữ ID tài nguyên Drawable (R.drawable.xxx)
-)
+    val imageResource: Int,
+    val albumCount: Int,
+    val songCount: Int
+) : Parcelable

@@ -1,12 +1,13 @@
-package com.finalexam.musicboxx.data.model
+package com.finalexam.musicboxx.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Song(
-    val id: String = "",
-    val title: String = "",
-    val artist: String = "",
-    val album: String = "",
-    val duration: Long = 0L,
-    val albumArtUrl: String = "",
-    val audioUrl: String = "",
-    val downloadCount: Long = 0L
-)
+    val id: String,
+    val title: String,
+    val artist: String,
+    val coverArtRes: Int,
+    val durationInSeconds: Int
+) : Parcelable

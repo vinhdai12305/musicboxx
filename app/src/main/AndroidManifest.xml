@@ -28,7 +28,10 @@
         <activity android:name=".homescreen.PlaylistsActivity" android:exported="false" />
         <activity android:name=".homescreen.NotificationActivities" android:exported="false" />
         <activity android:name=".homescreen.LanguageActivities" android:exported="false" />
-
+        <activity
+            android:name=".activity.ArtistDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".homescreen.MainActivity2" />
     </application>
 
 </manifest>
