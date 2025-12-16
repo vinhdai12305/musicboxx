@@ -7,6 +7,7 @@
     <application
         android:name=".MusicBoxApp"
         android:allowBackup="true"
+        android:name=".MusicBoxApp"  android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +18,7 @@
 
         <activity
             android:name="com.aicloudflare.musicbox.favorite.FavoritesActivity"
+            android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
