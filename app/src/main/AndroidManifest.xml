@@ -14,6 +14,7 @@
 
         <!-- 1. Activity khởi chạy chính (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
         <activity
+            android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
             android:name=".homescreen.MainActivity2"
             android:exported="true">
             <intent-filter>
@@ -21,6 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.aicloudflare.musicbox.playlist.AddSongsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.aicloudflare.musicbox.PlaylistDetailActivity.PlaylistDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
 
         <!-- 2. Khai báo các Activity khác (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
         <activity android:name=".homescreen.SettingsActivity" android:exported="false" />

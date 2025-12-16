@@ -4,6 +4,17 @@
     <!-- Base colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="orange">#FF6400</color>
+    <color name="gray_chu_lon">#8C8C8C</color>
+    <color name="gray_chu_nho">#8E8E8E</color>
+    <color name="gray_lyric">#4C4643</color>
+    <color name="gray_line">#D9D9D9</color>
+    <color name="orange_outside">#FF8D28</color>
+    <color name="orange_inside">#FBEEE2</color>
+    <color name="history_search">#626262</color>
+    <color name="primary_orange">#FF8D28</color>
+
+</resources>
     <color name="orange">#FFFF9800</color>
 
     <!-- Text colors -->
