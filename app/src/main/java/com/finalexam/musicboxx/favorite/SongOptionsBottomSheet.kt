@@ -7,50 +7,72 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.model.Song
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class SongOptionsBottomSheet(private val song: Song) : BottomSheetDialogFragment() {
+class SongOptionsBottomSheet : BottomSheetDialogFragment() {
+
+    private lateinit var song: Song
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // ✅ LẤY SONG TỪ BUNDLE (Parcelable)
+        song = requireArguments().getParcelable(ARG_SONG)
+            ?: error("Song must be passed to SongOptionsBottomSheet")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Nạp giao diện layout_bottom_sheet.xml mà bạn vừa sửa xong
+    ): View {
         return inflater.inflate(R.layout.layout_bottom_sheet, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Ánh xạ các View trong BottomSheet
         val tvTitle = view.findViewById<TextView>(R.id.tvSheetTitle)
         val tvInfo = view.findViewById<TextView>(R.id.tvSheetInfo)
 
-        // Dòng "Add to Playlist" mà bạn vừa thêm ID
-        val btnAddToPlaylist = view.findViewById<TextView>(R.id.sheetOptionAddToPlaylist)
+        val btnAddToPlaylist =
+            view.findViewById<TextView>(R.id.sheetOptionAddToPlaylist)
 
-        // Dòng "Delete"
-        val btnDelete = view.findViewById<TextView>(R.id.sheetOptionDelete)
+        val btnDelete =
+            view.findViewById<TextView>(R.id.sheetOptionDelete)
 
-        // 2. Hiển thị dữ liệu bài hát lên Header
+        // Hiển thị thông tin bài hát
         tvTitle.text = song.title
-        tvInfo.text = "${song.artist}"
+        tvInfo.text = song.artist
 
-        // 3. Bắt sự kiện click: Add to Playlist
         btnAddToPlaylist.setOnClickListener {
-            // Tạm thời hiện thông báo, sau này sẽ code logic hiện danh sách Playlist ở đây
-            Toast.makeText(context, "Đã chọn: Thêm vào Playlist", Toast.LENGTH_SHORT).show()
-            dismiss() // Đóng BottomSheet
-        }
-
-        // 4. Bắt sự kiện click: Delete
-        btnDelete.setOnClickListener {
-            Toast.makeText(context, "Đã chọn: Xóa bài hát", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                "Thêm '${song.title}' vào Playlist",
+                Toast.LENGTH_SHORT
+            ).show()
             dismiss()
         }
 
-        // Bạn có thể bắt sự kiện cho các dòng khác tương tự...
+        btnDelete.setOnClickListener {
+            Toast.makeText(requireContext(),
+                "Xóa '${song.title}'",
+                Toast.LENGTH_SHORT
+            ).show()
+            dismiss()
+        }
+    }
+
+    companion object {
+        private const val ARG_SONG = "ARG_SONG"
+
+        // ✅ CÁCH DUY NHẤT ĐÚNG ĐỂ TẠO FRAGMENT
+        fun newInstance(song: Song): SongOptionsBottomSheet {
+            return SongOptionsBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_SONG, song)
+                }
+            }
+        }
     }
 }

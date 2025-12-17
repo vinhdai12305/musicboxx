@@ -1,70 +1,61 @@
-package com.aicloudflare.musicbox.favorite // Nhớ đổi package cho đúng với dự án của bạn
+package com.finalexam.musicboxx.favorite
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.homescreen.SongOptionsBottomSheet
+import com.finalexam.musicboxx.model.Song
 
-class FavoritesAdapter(private val songs: List<Song>) :
-    RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder>() {
+class FavoritesAdapter(
+    private var songList: List<Song>,
+    private val onItemClick: (Song) -> Unit
+) : RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder>() {
 
-    // 1. Tạo View cho từng dòng từ file xml item_song_favorite
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_song_favorite, parent, false)
+            .inflate(R.layout.item_song_simple, parent, false)
         return FavoriteViewHolder(view)
     }
 
-    // 2. Gán dữ liệu vào View
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
-        val song = songs[position]
+        val song = songList[position]
+        holder.bind(song)
 
-        // Gán thông tin bài hát
-        holder.tvTitle.text = song.title
-        holder.tvArtist.text = song.artist
-
-        // Gán ảnh bìa (Dùng tạm ảnh mặc định, sau này thay bằng Glide để load URL)
-        // holder.imgCover.setImageResource(song.coverResId)
-        holder.imgCover .setImageResource(R.drawable.ic_launcher_background)
-
-        // --- SỰ KIỆN: Bấm nút Play tròn màu cam ---
-        holder.btnPlayItem.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "Play: ${song.title}", Toast.LENGTH_SHORT).show()
-            // Code xử lý phát nhạc sẽ viết ở đây
+        // CLICK → PLAY
+        holder.itemView.setOnClickListener {
+            onItemClick(song)
         }
 
-        // --- SỰ KIỆN: Bấm nút 3 chấm (More) -> Hiện Popup ---
-        holder.btnMore.setOnClickListener {
-            // Lấy Activity chứa Adapter này để gọi FragmentManager
-            val context = holder.itemView.context
-            val activity = context as? androidx.fragment.app.FragmentActivity
-
-            if (activity != null) {
-                // Khởi tạo BottomSheet và truyền bài hát vào
-                val bottomSheet = SongOptionsBottomSheet(song)
-
-                // Hiển thị BottomSheet
-                bottomSheet.show(activity.supportFragmentManager, "SongOptionsBottomSheet")
-            } else {
-                Toast.makeText(context, "Lỗi: Không thể mở popup", Toast.LENGTH_SHORT).show()
-            }
+        // LONG CLICK → OPTIONS
+        holder.itemView.setOnLongClickListener {
+            SongOptionsBottomSheet
+                .newInstance(song)
+                .show(
+                    (holder.itemView.context as AppCompatActivity)
+                        .supportFragmentManager,
+                    "FavoriteSongOptions"
+                )
+            true
         }
     }
 
-    // 3. Trả về tổng số bài hát
-    override fun getItemCount(): Int = songs.size
+    override fun getItemCount(): Int = songList.size
 
-    // 4. Khai báo các thành phần trong layout item_song_favorite.xml
     class FavoriteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.findViewById(R.id.tvSongTitle)
-        val tvArtist: TextView = itemView.findViewById(R.id.tvArtist)
-        val imgCover: ImageView = itemView.findViewById(R.id.imgCover)
-        val btnPlayItem: ImageView = itemView.findViewById(R.id.btnPlayItem)
-        val btnMore: ImageView = itemView.findViewById(R.id.btnMore)
+
+        private val title: TextView = itemView.findViewById(R.id.song_title)
+        private val artist: TextView = itemView.findViewById(R.id.artist_name)
+        private val cover: ImageView = itemView.findViewById(R.id.album_cover)
+
+        fun bind(song: Song) {
+            title.text = song.title
+            artist.text = song.artist
+            cover.setImageResource(song.coverArtRes)
+        }
     }
 }

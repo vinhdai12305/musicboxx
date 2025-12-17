@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.model.Song
 
 // Adapter nhận vào List<Song> (không null)
 class AddSongsAdapter(private val songList: List<Song>) :

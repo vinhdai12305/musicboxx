@@ -1,46 +1,78 @@
-package com.aicloudflare.musicbox.favorite
+package com.finalexam.musicboxx.favorite
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.data.model.Song
+import com.finalexam.musicboxx.model.Song
+import com.finalexam.musicboxx.player.PlaySongActivity
 
 class FavoritesActivity : AppCompatActivity() {
 
     private lateinit var rvSongs: RecyclerView
     private lateinit var adapter: FavoritesAdapter
-    private val favoriteSongs = ArrayList<Song>()
+
+    // Tạm thời dùng data giả
+    private val favoriteSongs = mutableListOf<Song>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_favorite) // Nạp file XML màn hình chính
+        setContentView(R.layout.activity_favorite)
 
-        // 1. Ánh xạ View
+        // RecyclerView
         rvSongs = findViewById(R.id.rvSongs)
 
-        // Nút back (Header icon) - Tùy logic bạn muốn bấm vào logo làm gì
+        // Back icon
         findViewById<ImageView>(R.id.imgHeaderIcon).setOnClickListener {
             finish()
         }
 
-        // 2. Tạo dữ liệu giả để test giao diện
+        // Fake data để test UI
         createDummyData()
 
-        // 3. Cài đặt RecyclerView
-        adapter = FavoritesAdapter(favoriteSongs)
+        // Adapter
+        adapter = FavoritesAdapter(favoriteSongs) { song ->
+            val intent = Intent(this, PlaySongActivity::class.java)
+            intent.putExtra("SONG_DATA", song)
+            startActivity(intent)
+        }
+
         rvSongs.layoutManager = LinearLayoutManager(this)
         rvSongs.adapter = adapter
     }
 
     private fun createDummyData() {
-        favoriteSongs.add(Song(title = "Không Buông", artist = "Hngle, Ari"))
-        favoriteSongs.add(Song(title = "Người Đầu Tiên", artist = "Juky San"))
-        favoriteSongs.add(Song(title = "Thanh Xuân", artist = "Da LAB"))
-        favoriteSongs.add(Song(title = "Mộng Yu", artist = "AMEE, RPT MCK"))
-        favoriteSongs.add(Song(title = "Bình Yên", artist = "Vũ., Binz"))
-        favoriteSongs.add(Song(title = "Tầng Thượng 102", artist = "Cá Hồi Hoang"))
+        favoriteSongs.add(
+            Song(
+                id = "1",
+                title = "Không Buông",
+                artist = "Hngle, Ari",
+                coverArtRes = R.drawable.rhym,
+                durationInSeconds = 215
+            )
+        )
+
+        favoriteSongs.add(
+            Song(
+                id = "2",
+                title = "Wean",
+                artist = "Wean Lê",
+                coverArtRes = R.drawable.wean,
+                durationInSeconds = 198
+            )
+        )
+
+        favoriteSongs.add(
+            Song(
+                id = "3",
+                title = "Tình",
+                artist = "Y6u",
+                coverArtRes = R.drawable.y6u,
+                durationInSeconds = 240
+            )
+        )
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.finalexam.musicboxx.R
 import androidx.appcompat.app.AppCompatActivity
-import com.aicloudflare.musicbox.playlist.AddSongsActivity
+import com.finalexam.musicboxx.playlist.AddSongsActivity
 
 class PlaylistDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
