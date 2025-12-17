@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.finalexam.musicboxx.splash.SplashFragment"
+        android:label="Splash">
+
+        <action
+            android:id="@+id/action_splashFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.finalexam.musicboxx.onboarding.OnboardingFragment"
+        android:label="Onboarding" />
+
+</navigation>
