@@ -19,7 +19,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_botton_sheet"
+        android:background="@drawable/bg_bottom_sheet"
         android:paddingStart="30dp"
         android:paddingTop="50dp"
         android:paddingEnd="30dp"

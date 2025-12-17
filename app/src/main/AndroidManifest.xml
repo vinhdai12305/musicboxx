@@ -5,8 +5,6 @@
     <application
         android:name=".MusicBoxApp"
         android:allowBackup="true"
-        android:name=".MusicBoxApp"  android:allowBackup="true"
-        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -15,55 +13,52 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicBox">
 
-        <!-- 1. Activity khởi chạy chính (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
+        <!-- ===== LAUNCHER / HOME ===== -->
         <activity
-            android:name="com.aicloudflare.musicbox.favorite.FavoritesActivity"
-            android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
-            android:name=".homescreen.MainActivity2"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- ===== PLAYER ===== -->
         <activity
-            android:name="com.aicloudflare.musicbox.playlist.AddSongsActivity"
+            android:name=".player.PlaySongActivity"
+            android:exported="false" />
+
+        <!-- ===== FAVORITES ===== -->
+        <activity
+            android:name=".homescreen.FavoritesActivity"
+            android:exported="false" />
+
+        <!-- ===== PLAYLIST ===== -->
+        <activity
+            android:name=".homescreen.PlaylistsActivity"
+            android:exported="false" />
+
+
+        <!-- ===== SETTINGS ===== -->
+        <activity
+            android:name=".homescreen.SettingsActivity"
             android:exported="false" />
 
         <activity
-            android:name="com.aicloudflare.musicbox.PlaylistDetailActivity.PlaylistDetailActivity"
+            android:name=".homescreen.LanguageActivities"
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".homescreen.NotificationActivities"
             android:exported="false" />
 
-        <activity
-            android:name="com.aicloudflare.musicbox.playlist.PlaylistActivity"
-            android:exported="false" />
 
-        <activity
-            android:name="com.aicloudflare.musicbox.playlist.AddSongsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name="com.aicloudflare.musicbox.PlaylistDetailActivity.PlaylistDetailActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-
-        <!-- 2. Khai báo các Activity khác (ĐÃ SỬA LỖI ĐƯỜNG DẪN) -->
-        <activity android:name=".homescreen.SettingsActivity" android:exported="false" />
-        <activity android:name=".homescreen.FavoritesActivity" android:exported="false" />
-        <activity android:name=".homescreen.PlaylistsActivity" android:exported="false" />
-        <activity android:name=".homescreen.NotificationActivities" android:exported="false" />
-        <activity android:name=".homescreen.LanguageActivities" android:exported="false" />
+        <!-- ===== ARTIST DETAIL ===== -->
         <activity
             android:name=".activity.ArtistDetailActivity"
             android:exported="false"
-            android:parentActivityName=".homescreen.MainActivity2" />
+            android:parentActivityName=".MainActivity" />
+
     </application>
 
 </manifest>

@@ -1,24 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- ================================================= -->
+    <!-- THEME DARK MODE – MUSICBOX -->
+    <!-- ================================================= -->
     <style name="Theme.MusicBox" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
+        <!-- Màu chủ đạo -->
         <item name="colorPrimary">@color/orange</item>
         <item name="colorPrimaryVariant">@color/orange</item>
-        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorOnPrimary">@android:color/black</item>
 
         <item name="colorSecondary">@color/orange</item>
         <item name="colorSecondaryVariant">@color/orange</item>
         <item name="colorOnSecondary">@android:color/black</item>
 
+        <!-- Nền & surface cho Dark mode -->
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="colorSurface">@color/app_background</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- Status bar -->
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowLightStatusBar">false</item>
+
+        <!-- BottomSheet (bắt buộc để không crash) -->
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
-    <!-- RadioButton cho dark mode -->
-    <style name="RadioButtonStyle">
+    <!-- ================================================= -->
+    <!-- RADIO BUTTON – DARK MODE -->
+    <!-- ================================================= -->
+    <style name="RadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:buttonTint">@color/orange</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
+    <!-- ========================= -->
+    <!-- FIX BUILD – STUB STYLES -->
+    <!-- ========================= -->
+
+    <style name="BottomSheetOptionStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SeeAllButtonStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

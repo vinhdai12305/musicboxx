@@ -10,12 +10,10 @@ import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.model.MusicItem
 
 class MusicSquareAdapter(
-    private var musicList: List<MusicItem>
+    private var musicList: List<MusicItem>,
+    private val onItemClick: (MusicItem) -> Unit
 ) : RecyclerView.Adapter<MusicSquareAdapter.MusicViewHolder>() {
 
-    // ===============================
-    // HÀM QUAN TRỌNG ĐỂ UPDATE DATA
-    // ===============================
     fun updateData(newList: List<MusicItem>) {
         musicList = newList
         notifyDataSetChanged()
@@ -28,21 +26,25 @@ class MusicSquareAdapter(
     }
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
-        val music = musicList[position]
+        val item = musicList[position]
+        holder.bind(item)
 
-        holder.title.text = music.title
-        holder.artist.text = music.artist
-
-        // Hiện tại vẫn dùng drawable (team sẽ đổi sang imageUrl sau)
-        holder.image.setImageResource(music.imageResource)
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int = musicList.size
 
     class MusicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val image: ImageView = itemView.findViewById(R.id.album_cover)
+        private val title: TextView = itemView.findViewById(R.id.song_title)
+        private val artist: TextView = itemView.findViewById(R.id.artist_name_small)
 
-        val image: ImageView = itemView.findViewById(R.id.album_cover)
-        val title: TextView = itemView.findViewById(R.id.song_title)
-        val artist: TextView = itemView.findViewById(R.id.artist_name_small)
+        fun bind(item: MusicItem) {
+            title.text = item.title
+            artist.text = item.artist
+            image.setImageResource(item.imageResource)
+        }
     }
 }

@@ -5,17 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.imageview.ShapeableImageView
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.model.ArtistItem
+import com.google.android.material.imageview.ShapeableImageView
 
 class ArtistCircleAdapter(
-    private var artistList: List<ArtistItem>
+    private var artistList: List<ArtistItem>,
+    private val onItemClick: (ArtistItem) -> Unit
 ) : RecyclerView.Adapter<ArtistCircleAdapter.ArtistViewHolder>() {
 
-    // ===============================
-    // UPDATE DATA (QUAN TRỌNG)
-    // ===============================
     fun updateData(newList: List<ArtistItem>) {
         artistList = newList
         notifyDataSetChanged()
@@ -29,16 +27,23 @@ class ArtistCircleAdapter(
 
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
         val artist = artistList[position]
-        holder.artistName.text = artist.name
-        holder.artistImage.setImageResource(artist.imageResource)
+        holder.bind(artist)
+        holder.itemView.setOnClickListener {
+            onItemClick(artist)
+        }
     }
 
-    override fun getItemCount(): Int = artistList.size
+    override fun getItemCount() = artistList.size
 
     class ArtistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val artistImage: ShapeableImageView =
+        private val image: ShapeableImageView =
             itemView.findViewById(R.id.item_artist_image)
-        val artistName: TextView =
+        private val name: TextView =
             itemView.findViewById(R.id.item_artist_name)
+
+        fun bind(item: ArtistItem) {
+            name.text = item.name
+            image.setImageResource(item.imageResource)
+        }
     }
 }

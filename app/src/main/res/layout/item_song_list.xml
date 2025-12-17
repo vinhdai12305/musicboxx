@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="8dp"
     android:paddingHorizontal="16dp">
 
+    <!-- THUMBNAIL -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSongThumb"
         android:layout_width="50dp"
@@ -20,15 +22,16 @@
             android:id="@+id/imgSongThumb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher_background"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"/>
     </androidx.cardview.widget.CardView>
 
+    <!-- SONG TITLE -->
     <TextView
         android:id="@+id/tvSongTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Chẵn Tinh"
+        android:text="Chằn Tinh"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -38,6 +41,7 @@
         app:layout_constraintTop_toTopOf="@id/cardSongThumb"
         app:layout_constraintEnd_toStartOf="@id/btnPlaySong"/>
 
+    <!-- SONG ARTIST -->
     <TextView
         android:id="@+id/tvSongArtist"
         android:layout_width="0dp"
@@ -50,26 +54,31 @@
         app:layout_constraintEnd_toEndOf="@id/tvSongTitle"
         app:layout_constraintTop_toBottomOf="@id/tvSongTitle"/>
 
+    <!-- PLAY BUTTON -->
     <ImageView
         android:id="@+id/btnPlaySong"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:src="@drawable/ic_play_next"
         app:tint="@color/white"
-        android:background="@drawable/ic_play_next"
-        android:padding="6dp"
-        android:layout_marginEnd="16dp"
+        android:background="@drawable/ic_play_circle"
+        android:padding="8dp"
+        android:contentDescription="Play song"
+        android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toStartOf="@id/btnMenuSong"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <!-- MORE OPTIONS -->
     <ImageView
         android:id="@+id/btnMenuSong"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_more_vert_black"
+        android:src="@drawable/ic_more_vert"
         app:tint="#808080"
+        android:contentDescription="More options"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

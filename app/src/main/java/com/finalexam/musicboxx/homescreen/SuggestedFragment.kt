@@ -1,5 +1,6 @@
 package com.finalexam.musicboxx.homescreen
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,22 +10,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.adapter.MusicSquareAdapter
 import com.finalexam.musicboxx.adapter.ArtistCircleAdapter
-import com.finalexam.musicboxx.data.repository.SongRepository
+import com.finalexam.musicboxx.adapter.MusicSquareAdapter
 import com.finalexam.musicboxx.data.repository.ArtistRepository
+import com.finalexam.musicboxx.data.repository.SongRepository
 import com.finalexam.musicboxx.model.MusicItem
 import com.finalexam.musicboxx.model.Song
-import com.finalexam.musicboxx.model.ArtistItem
+import com.finalexam.musicboxx.player.PlaySongActivity
 import com.finalexam.musicboxx.utils.Resource
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class SuggestedFragment : Fragment() {
 
-    // ===============================
-    // REPOSITORIES (SOURCE OF TRUTH)
-    // ===============================
     private val songRepository by lazy {
         SongRepository(FirebaseFirestore.getInstance())
     }
@@ -33,12 +31,10 @@ class SuggestedFragment : Fragment() {
         ArtistRepository(FirebaseFirestore.getInstance())
     }
 
-    // ===============================
-    // ADAPTERS
-    // ===============================
     private lateinit var recentAdapter: MusicSquareAdapter
     private lateinit var mostPlayedAdapter: MusicSquareAdapter
     private lateinit var artistAdapter: ArtistCircleAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,34 +46,37 @@ class SuggestedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerViews(view)
         loadHomeData()
     }
 
     // ===============================
-    // SETUP RECYCLERVIEWS (NO DATA)
+    // SETUP RECYCLERVIEWS
     // ===============================
     private fun setupRecyclerViews(view: View) {
 
-        // Recently Played
-        recentAdapter = MusicSquareAdapter(emptyList())
+        recentAdapter = MusicSquareAdapter(emptyList()) { musicItem ->
+            openPlaySong(musicItem)
+        }
+
+        mostPlayedAdapter = MusicSquareAdapter(emptyList()) { musicItem ->
+            openPlaySong(musicItem)
+        }
+
+        artistAdapter = ArtistCircleAdapter(emptyList()) { }
+
         view.findViewById<RecyclerView>(R.id.recycler_recently_played).apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = recentAdapter
         }
 
-        // Most Played
-        mostPlayedAdapter = MusicSquareAdapter(emptyList())
         view.findViewById<RecyclerView>(R.id.recycler_most_played).apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = mostPlayedAdapter
         }
 
-        // Artists
-        artistAdapter = ArtistCircleAdapter(emptyList())
         view.findViewById<RecyclerView>(R.id.recycler_artists).apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -86,11 +85,10 @@ class SuggestedFragment : Fragment() {
     }
 
     // ===============================
-    // LOAD DATA FROM REPOSITORIES
+    // LOAD DATA
     // ===============================
     private fun loadHomeData() {
 
-        // Recently Played (tạm dùng all songs)
         lifecycleScope.launch {
             when (val result = songRepository.getAllSongs()) {
                 is Resource.Success -> {
@@ -98,14 +96,10 @@ class SuggestedFragment : Fragment() {
                         mapSongsToMusicItems(result.data ?: emptyList())
                     )
                 }
-                is Resource.Error -> {
-                    // TODO: show error nếu cần
-                }
                 else -> {}
             }
         }
 
-        // Most Played (Trending)
         lifecycleScope.launch {
             when (val result = songRepository.getTrendingSongs()) {
                 is Resource.Success -> {
@@ -113,21 +107,14 @@ class SuggestedFragment : Fragment() {
                         mapSongsToMusicItems(result.data ?: emptyList())
                     )
                 }
-                is Resource.Error -> {
-                    // TODO: show error nếu cần
-                }
                 else -> {}
             }
         }
 
-        // Artists
         lifecycleScope.launch {
             when (val result = artistRepository.getAllArtists()) {
                 is Resource.Success -> {
                     artistAdapter.updateData(result.data ?: emptyList())
-                }
-                is Resource.Error -> {
-                    // TODO: show error nếu cần
                 }
                 else -> {}
             }
@@ -135,14 +122,25 @@ class SuggestedFragment : Fragment() {
     }
 
     // ===============================
-    // MAP DOMAIN → UI MODEL
+    // NAVIGATION
+    // ===============================
+    private fun openPlaySong(item: MusicItem) {
+        val intent = Intent(requireContext(), PlaySongActivity::class.java)
+        intent.putExtra("SONG_ID", item.id)
+        intent.putExtra("SONG_TITLE", item.title)
+        intent.putExtra("SONG_ARTIST", item.artist)
+        startActivity(intent)
+    }
+
+    // ===============================
+    // MAPPER (QUAN TRỌNG)
     // ===============================
     private fun mapSongsToMusicItems(songs: List<Song>): List<MusicItem> {
-        return songs.map { song ->
+        return songs.map {
             MusicItem(
-                id = song.id ?: "",
-                title = song.title ?: "",
-                artist = song.artist ?: "",
+                id = it.id ?: "",
+                title = it.title ?: "",
+                artist = it.artist ?: "",
                 imageResource = R.drawable.ic_launcher_foreground
             )
         }

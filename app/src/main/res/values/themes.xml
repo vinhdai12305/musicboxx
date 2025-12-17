@@ -1,179 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Musicboxx" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
+    <!-- BASE THEME -->
+    <style name="Base.Theme.Musicboxx"
+        parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <!-- ================================================================================== -->
-    <!-- PHẦN 1: THEME CHÍNH CỦA ỨNG DỤNG -->
-    <!-- ================================================================================== -->
-    <style name="Theme.MusicBox" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Màu sắc chính -->
+    <!-- APP THEME -->
+    <style name="Theme.MusicBox"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- PRIMARY -->
         <item name="colorPrimary">#FF8D28</item>
-        <item name="colorPrimaryVariant">#FF8D28</item>
         <item name="colorOnPrimary">@android:color/white</item>
+
         <item name="colorSecondary">#FF8D28</item>
-        <item name="colorSecondaryVariant">#FF8D28</item>
         <item name="colorOnSecondary">@android:color/black</item>
 
-        <!-- Thanh trạng thái (Status Bar) -->
-        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <!-- MATERIAL 3 SURFACE (QUAN TRỌNG NHẤT) -->
+        <item name="colorSurface">@android:color/white</item>
+        <item name="colorSurfaceContainer">@android:color/white</item>
+        <item name="colorSurfaceVariant">@android:color/white</item>
 
-        <!-- **QUAN TRỌNG**: Gán Theme cho BottomSheetDialog để chống crash -->
-        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <!-- STATUS BAR -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">
+            true
+        </item>
+
+        <!-- APP BAR -->
+        <item name="appBarLayoutStyle">@style/AppBarWhite</item>
+
+        <!-- BOTTOM SHEET -->
+        <item name="bottomSheetDialogTheme">
+            @style/AppBottomSheetDialogTheme
+        </item>
     </style>
 
+    <!-- APP BAR STYLE -->
+    <style name="AppBarWhite"
+        parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">@android:color/white</item>
+        <item name="elevation">0dp</item>
+    </style>
 
-    <!-- ================================================================================== -->
-    <!-- PHẦN 2: CÁC STYLE LIÊN QUAN ĐẾN BOTTOMSHEET -->
-    <!-- ================================================================================== -->
-
-    <!-- Theme cho cửa sổ BottomSheetDialog -->
-    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+    <!-- BOTTOM SHEET -->
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <!-- Style tùy chỉnh cho nội dung của BottomSheet -->
-    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <!-- Đặt nền trong suốt để hiển thị nền bo góc tự định nghĩa -->
+    <style name="AppModalStyle"
+        parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
-
-    <!-- Style cho các mục tùy chọn bên trong BottomSheet -->
-    <style name="BottomSheetOption" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:drawablePadding">24dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-
-    <!-- ================================================================================== -->
-    <!-- PHẦN 3: CÁC STYLE CHUNG KHÁC CỦA ỨNG DỤNG -->
-    <!-- ================================================================================== -->
-
-    <!-- Style cho Tiêu đề mục (Recently Played, Artists...) -->
-    <style name="SectionHeaderTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textColor">#1C1C1C</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- Style cho nút "See All" -->
-    <style name="SeeAllButtonStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textColor">#FF8C00</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- Style cho vùng chứa Tiêu đề và nút See All -->
-    <style name="SectionHeaderContainerStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginBottom">12dp</item>
-    </style>
-
-    <!-- Style chung cho các RecyclerView ngang -->
-    <style name="HorizontalRecyclerViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:layout_marginBottom">24dp</item>
-    </style>
-
-    <!-- Style cho chữ trong các tab -->
-    <style name="CustomTabStyle" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="textAllCaps">false</item>
-    </style>
-
-    <!-- Style cho tiêu đề của item (Tên bài hát, tên nghệ sĩ) -->
-    <style name="ItemTitleStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">#1C1C1C</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- Style cho tiêu đề phụ của item (Tên nghệ sĩ dưới bài hát) -->
-    <style name="ItemSubtitleStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">#8A8A8A</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <!-- Style cho các RadioButton trong Dialog Sắp xếp -->
-    <style name="RadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">20dp</item>
-        <item name="android:paddingEnd">20dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:textColor">#1C1C1C</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:layoutDirection">rtl</item>
-        <item name="android:textAlignment">textStart</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-    </style>
-
-    <!-- Style để tạo ảnh hình tròn cho ShapeableImageView -->
-    <style name="CircleImageStyle" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
-    </style>
-
-    <!-- Style để tạo ảnh bo góc cho ShapeableImageView -->
-    <style name="RoundedImageStyle" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-    </style>
-    <style name="BottomSheetOptionStyle" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:drawablePadding">16dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
 
 </resources>

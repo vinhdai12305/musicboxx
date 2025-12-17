@@ -1,52 +1,77 @@
-package com.finalexam.musicboxx.adapter // Gói của bạn, giữ nguyên
+package com.finalexam.musicboxx.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView // THÊM VÀO
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.model.MusicItem
+import com.finalexam.musicboxx.homescreen.SongOptionsBottomSheet
+import com.finalexam.musicboxx.model.Song
 
-// BƯỚC 1: TẠO INTERFACE ĐỂ GIAO TIẾP VỚI FRAGMENT
-interface OnSongOptionsClickListener {
-    fun onSongOptionsClicked(song: MusicItem)
-}
-
-// BƯỚC 2: THAY ĐỔI CONSTRUCTOR ĐỂ NHẬN LISTENER
 class SongAdapter(
-    private val songList: List<MusicItem>,
-    private val listener: OnSongOptionsClickListener // Thêm listener vào constructor
+    private val songs: MutableList<Song>,
+    private val onItemClick: (Song) -> Unit
 ) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
-    // BƯỚC 3: CẬP NHẬT VIEWHOLDER ĐỂ CÓ NÚT 3 CHẤM
+    // ===============================
+    // VIEW HOLDER
+    // ===============================
     class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val songTitle: TextView = itemView.findViewById(R.id.song_title)
-        val songArtist: TextView = itemView.findViewById(R.id.song_artist)
-        // Thêm tham chiếu đến ImageView của nút 3 chấm
-        val moreOptionsButton: ImageView = itemView.findViewById(R.id.more_options_button)
+        val title: TextView = itemView.findViewById(R.id.song_title)
+        val artist: TextView = itemView.findViewById(R.id.artist_name_small)
+        val cover: ImageView = itemView.findViewById(R.id.album_cover)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        // Đảm bảo bạn đang dùng layout "item_song_list" phiên bản có nút 3 chấm
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_song_list, parent, false)
+    // ===============================
+    // REQUIRED OVERRIDES
+    // ===============================
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SongViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_music_square, parent, false)
         return SongViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return songList.size
+    override fun onBindViewHolder(
+        holder: SongViewHolder,
+        position: Int
+    ) {
+        val song = songs[position]
+
+        holder.title.text = song.title
+        holder.artist.text = song.artist
+        holder.cover.setImageResource(song.coverArtRes)
+
+        // 👉 CLICK → PLAY SONG
+        holder.itemView.setOnClickListener {
+            onItemClick(song)
+        }
+
+        // 👉 LONG CLICK → OPTIONS BOTTOM SHEET
+        holder.itemView.setOnLongClickListener {
+            val sheet = SongOptionsBottomSheet.newInstance(song)
+            sheet.show(
+                (holder.itemView.context as AppCompatActivity)
+                    .supportFragmentManager,
+                "SongOptions"
+            )
+            true
+        }
     }
 
-    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val currentSong = songList[position]
-        holder.songTitle.text = currentSong.title
-        holder.songArtist.text = currentSong.artist
+    override fun getItemCount(): Int = songs.size
 
-        // BƯỚC 4: GÁN SỰ KIỆN CLICK CHO NÚT 3 CHẤM
-        holder.moreOptionsButton.setOnClickListener {
-            // Khi người dùng click, gọi hàm trong interface và truyền bài hát hiện tại
-            listener.onSongOptionsClicked(currentSong)
-        }
+    // ===============================
+    // OPTIONAL: UPDATE DATA
+    // ===============================
+    fun updateData(newSongs: List<Song>) {
+        songs.clear()
+        songs.addAll(newSongs)
+        notifyDataSetChanged()
     }
 }
