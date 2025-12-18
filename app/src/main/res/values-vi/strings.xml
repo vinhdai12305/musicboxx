@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">musicboxx</string>
+
+    <!-- Settings -->
+    <string name="settings">Cài đặt</string>
+    <string name="backup">Sao lưu</string>
+    <string name="notification">Thông báo</string>
+    <string name="language">Ngôn ngữ</string>
+
+    <!-- Language names -->
+    <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="language_english_us">Tiếng Anh (Mỹ)</string>
+    <string name="language_english_uk">Tiếng Anh (Anh)</string>
+
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="share_app">Chia sẻ ứng dụng</string>
+    <string name="change_log">Nhật ký thay đổi</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="faq">Câu hỏi thường gặp</string>
+    <string name="quit">Thoát</string>
+
+    <!-- Notification screen -->
+    <string name="new_music">Nhạc mới</string>
+    <string name="playlist_updates">Cập nhật playlist</string>
+    <string name="artist_updates">Cập nhật nghệ sĩ</string>
+    <string name="mume_offers">Ưu đãi Mume</string>
+    <string name="payments_subs">Thanh toán &amp; gói dịch vụ</string>
+    <string name="new_features">Tính năng mới</string>
+    <string name="security">Bảo mật</string>
+
+    <!-- Notification details -->
+    <string name="push">Thông báo đẩy</string>
+    <string name="push_email">Đẩy, Email</string>
+
+    <!-- Theme -->
+    <string name="choose_theme">Chọn giao diện</string>
+    <string name="theme_light">Chế độ sáng</string>
+    <string name="theme_dark">Chế độ tối</string>
+    <string name="song_count_format">%d bài hát</string>
+
+</resources>
