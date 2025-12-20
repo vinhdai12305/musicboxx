@@ -6,7 +6,6 @@ data class Playlist(
     val id: String = "",
     val name: String = "",
     val userId: String = "",
-    val songIds: List<String> = emptyList(),
-    val coverUrl: String = "",
-    val createdAt: Timestamp? = null
+    val createdAt: Timestamp = Timestamp.now(),
+    val songIds: List<String> = emptyList()
 )
