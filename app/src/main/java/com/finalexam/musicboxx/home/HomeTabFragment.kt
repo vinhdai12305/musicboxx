@@ -11,69 +11,82 @@ import com.finalexam.musicboxx.MainActivity
 import com.finalexam.musicboxx.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObjects
-// LƯU Ý: Import đúng class Song của bạn
-// import com.finalexam.musicboxx.model.Song
 import Song
 
 class HomeTabFragment : Fragment(R.layout.fragment_home_tab) {
 
-    private lateinit var songsAdapter: SongsAdapter
-    // Khởi tạo list rỗng ban đầu
-    private var songList: ArrayList<Song> = ArrayList()
+    // 1. Khai báo Adapter
+    // Dùng SongsAdapter cho bài hát (hình vuông)
+    private lateinit var recentAdapter: SongsAdapter
+    private lateinit var mostPlayedAdapter: SongsAdapter
+
+    // Dùng ArtistsAdapter cho nghệ sĩ (hình tròn)
+    private lateinit var artistsAdapter: ArtistsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Ánh xạ RecyclerView từ layout fragment_home_tab.xml
-        // (Đảm bảo ID trong xml là rvRecentlyPlayed hoặc rvSongs tùy bạn đặt)
+        // 2. Ánh xạ 3 RecyclerView từ giao diện
         val rvRecentlyPlayed = view.findViewById<RecyclerView>(R.id.rvRecentlyPlayed)
+        val rvArtists = view.findViewById<RecyclerView>(R.id.rvArtists)
+        val rvMostPlayed = view.findViewById<RecyclerView>(R.id.rvMostPlayed)
 
-        // 2. Cài đặt Adapter và xử lý sự kiện CLICK
-        songsAdapter = SongsAdapter(songList) { song ->
-            // --- LOGIC KHI CLICK VÀO BÀI HÁT ---
+        // 3. Xử lý sự kiện click
+        val onSongClick: (Song) -> Unit = { song ->
+            // Khi click vào bài hát -> Phát nhạc
             Toast.makeText(context, "Đang phát: ${song.title}", Toast.LENGTH_SHORT).show()
-
-            // Gọi về MainActivity để phát nhạc
-            val mainActivity = activity as? MainActivity
-            if (mainActivity != null) {
-                // Đảm bảo biến chứa link nhạc trong Song là audioUrl
-                mainActivity.playMusic(song.audioUrl)
-            } else {
-                Log.e("HomeTabFragment", "Không tìm thấy MainActivity")
-            }
+            (activity as? MainActivity)?.playMusic(song.audioUrl)
         }
 
-        // 3. Cấu hình RecyclerView
-        rvRecentlyPlayed.adapter = songsAdapter
-        // Horizontal: Lướt ngang (phù hợp mục Recently Played)
-        // Nếu muốn danh sách dọc thì xóa chữ LinearLayoutManager.HORIZONTAL, false đi
-        rvRecentlyPlayed.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val onArtistClick: (Song) -> Unit = { song ->
+            // Khi click vào Nghệ sĩ -> Tạm thời hiện thông báo (hoặc xử lý mở trang profile sau này)
+            Toast.makeText(context, "Nghệ sĩ: ${song.artist}", Toast.LENGTH_SHORT).show()
+        }
 
-        // 4. Gọi hàm tải dữ liệu
-        fetchSongsFromFirebase()
+        // 4. Khởi tạo Adapter
+        recentAdapter = SongsAdapter(ArrayList(), onSongClick)     // Hình vuông
+        mostPlayedAdapter = SongsAdapter(ArrayList(), onSongClick) // Hình vuông
+
+        // QUAN TRỌNG: Khởi tạo ArtistsAdapter để hiện hình tròn
+        artistsAdapter = ArtistsAdapter(ArrayList(), onArtistClick)
+
+        // 5. Cài đặt RecyclerView (Tất cả đều lướt ngang)
+        setupHorizontalRecyclerView(rvRecentlyPlayed, recentAdapter)
+        setupHorizontalRecyclerView(rvArtists, artistsAdapter)
+        setupHorizontalRecyclerView(rvMostPlayed, mostPlayedAdapter)
+
+        // 6. Tải dữ liệu từ Firebase
+        fetchHomeData()
     }
 
-    // Hàm lấy dữ liệu từ Firebase (Logic cũ của bạn, chạy rất ổn)
-    private fun fetchSongsFromFirebase() {
+    // Hàm phụ trợ giúp code gọn hơn
+    private fun setupHorizontalRecyclerView(rv: RecyclerView, adapter: RecyclerView.Adapter<*>) {
+        rv.adapter = adapter
+        rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rv.setHasFixedSize(true)
+    }
+
+    private fun fetchHomeData() {
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("songs")
-            .get()
+        // Lấy dữ liệu bài hát
+        db.collection("songs").limit(10).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val listData = documents.toObjects(Song::class.java)
+                    val list = documents.toObjects(Song::class.java)
 
-                    // Cập nhật dữ liệu vào Adapter
-                    songsAdapter.updateData(listData)
+                    // Cập nhật dữ liệu cho từng mục
+                    recentAdapter.updateData(list)
 
-                    Log.d("FIREBASE", "Đã tải: ${listData.size} bài hát")
-                } else {
-                    Log.d("FIREBASE", "Không có dữ liệu")
+                    // Mục Artists: Cũng dùng list bài hát nhưng Adapter sẽ chỉ lấy ảnh và tên ca sĩ để hiện hình tròn
+                    artistsAdapter.updateData(list)
+
+                    // Mục Most Played: Đảo lộn danh sách cho khác biệt chút
+                    mostPlayedAdapter.updateData(list.shuffled())
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("FIREBASE", "Lỗi tải nhạc", e)
-                Toast.makeText(context, "Lỗi kết nối!", Toast.LENGTH_SHORT).show()
+                Log.e("FIREBASE", "Lỗi tải dữ liệu", e)
             }
     }
 }

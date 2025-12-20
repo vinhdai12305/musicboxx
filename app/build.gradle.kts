@@ -41,7 +41,7 @@ dependencies {
     // --- NAVIGATION ---
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     // --- CORE ANDROID (ĐÃ HẠ CẤP VỀ BẢN ỔN ĐỊNH) ---
     // Thay vì dùng libs.androidx..., ta dùng chuỗi cứng để đảm bảo version đúng
     implementation("androidx.core:core-ktx:1.13.1") // Bản ổn định cho SDK 34
