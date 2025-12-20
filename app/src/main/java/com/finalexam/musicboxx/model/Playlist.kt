@@ -1,15 +1,21 @@
 package com.finalexam.musicboxx.data.model
 
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 
 data class Playlist(
-    var id: String = "",
-    var name: String = "",
+    val id: String = "",
 
-    @get:PropertyName("image_url")
-    @set:PropertyName("image_url")
-    var imageUrl: String = "",
+    @get:PropertyName("name")
+    val name: String = "",
 
-    var songCount: Int = 0
+    @get:PropertyName("imageUrl")
+    val imageUrl: String = "",
+
+    // --- THÊM DÒNG NÀY ---
+    @get:PropertyName("artist")
+    val artist: String = "",
+    // ---------------------
+
+    @get:PropertyName("songCount")
+    val songCount: String = "0 songs"
 )
