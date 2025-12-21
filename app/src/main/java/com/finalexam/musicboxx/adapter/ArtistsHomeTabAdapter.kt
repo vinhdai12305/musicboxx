@@ -10,17 +10,16 @@ import com.bumptech.glide.Glide
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.model.Artist
 
-// Đã sửa lỗi kế thừa ở dòng dưới
 class ArtistsHomeTabAdapter(
     private var artistsList: List<Artist>,
     private val onClick: (Artist) -> Unit
 ) : RecyclerView.Adapter<ArtistsHomeTabAdapter.ArtistViewHolder>() {
 
-    // Class ViewHolder nằm bên trong adapter này
     class ArtistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgArtist: ImageView = itemView.findViewById(R.id.imgSong)
-        val tvName: TextView = itemView.findViewById(R.id.tvTitle)
-        val tvDesc: TextView = itemView.findViewById(R.id.tvArtist) // Thêm dòng này để ẩn hoặc hiện text phụ nếu cần
+        val imgArtist: ImageView = itemView.findViewById(R.id.imgArtist)
+        val tvArtistName: TextView = itemView.findViewById(R.id.tvArtistName)
+        val tvArtistInfo: TextView = itemView.findViewById(R.id.tvArtistInfo)
+        val btnMore: ImageView = itemView.findViewById(R.id.btnMore)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistViewHolder {
@@ -32,18 +31,23 @@ class ArtistsHomeTabAdapter(
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
         val artist = artistsList[position]
 
-        holder.tvName.text = artist.name ?: "Unknown Artist"
+        holder.tvArtistName.text =
+            if (artist.name.isNotBlank()) artist.name else "Unknown Artist"
 
-        // Ẩn text phụ đi vì item_artist_hometab có 2 dòng text mà Artist chỉ có tên
-        // Hoặc bạn có thể set text khác vào đây nếu muốn
-        holder.tvDesc.text = "Artist"
+        // Vì model chỉ có name + image
+        holder.tvArtistInfo.text = "Artist"
 
         Glide.with(holder.itemView.context)
             .load(artist.image)
             .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.ic_launcher_background)
             .into(holder.imgArtist)
 
         holder.itemView.setOnClickListener { onClick(artist) }
+
+        holder.btnMore.setOnClickListener {
+            // TODO: popup menu sau
+        }
     }
 
     override fun getItemCount(): Int = artistsList.size
