@@ -1,48 +1,44 @@
 package com.finalexam.musicboxx.playlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.widget.TextView // Thêm import này
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController // QUAN TRỌNG
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.adapter.PlaylistAdapter
-import com.finalexam.musicboxx.data.model.Playlist // Kiểm tra lại package Playlist
+import com.finalexam.musicboxx.data.model.Playlist
 import com.google.firebase.firestore.FirebaseFirestore
 
 class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
 
     private lateinit var playlistAdapter: PlaylistAdapter
     private val playlistList = ArrayList<Playlist>()
+    private lateinit var tvPlaylistCount: TextView // Khai báo biến đếm số lượng
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- 1. XỬ LÝ NÚT SEARCH (MỚI THÊM) ---
-        // Dùng findViewById<View> để an toàn, tránh lỗi null nếu ID chưa load kịp
+        // 1. Ánh xạ View
+        tvPlaylistCount = view.findViewById(R.id.tvPlaylistCount) // Ánh xạ Text đếm
+        val rvPlaylists = view.findViewById<RecyclerView>(R.id.rvPlaylists)
+
         view.findViewById<View>(R.id.ivSearch)?.setOnClickListener {
             findNavController().navigate(R.id.searchFragment)
         }
-        // --------------------------------------
-
-        val rvPlaylists = view.findViewById<RecyclerView>(R.id.rvPlaylists)
 
         // 2. Setup Adapter
         playlistAdapter = PlaylistAdapter(playlistList) { playlist ->
-            if (playlist.id == "ADD_NEW") {
-                Toast.makeText(context, "Tạo Playlist mới", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Mở playlist: ${playlist.name}", Toast.LENGTH_SHORT).show()
-            }
+            // Xử lý khi click vào item playlist
+            // Toast.makeText(context, "Clicked: ${playlist.name}", Toast.LENGTH_SHORT).show()
         }
 
         rvPlaylists.adapter = playlistAdapter
         rvPlaylists.layoutManager = LinearLayoutManager(context)
 
-        // 3. Tải dữ liệu
+        // 3. Tải dữ liệu từ Firebase
         fetchPlaylists()
     }
 
@@ -51,26 +47,24 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         db.collection("playlists")
             .get()
             .addOnSuccessListener { documents ->
-                val tempList = ArrayList<Playlist>()
+                playlistList.clear() // Xóa dữ liệu cũ trước khi thêm mới
 
-                // Luôn thêm nút Add New đầu tiên
-                tempList.add(Playlist(id = "ADD_NEW", name = "Add New Playlist"))
+                // --- QUAN TRỌNG: Đã XÓA dòng thêm nút "Add New" giả ---
 
                 if (!documents.isEmpty) {
                     val realData = documents.toObjects(Playlist::class.java)
-                    tempList.addAll(realData)
+                    playlistList.addAll(realData)
                 }
 
-                // Cập nhật Adapter (bạn cần viết hàm updateData trong Adapter hoặc dùng playlistList.clear/addAll)
-                // Giả sử Adapter nhận list trực tiếp thì ta update list đó
-                playlistList.clear()
-                playlistList.addAll(tempList)
+                // Cập nhật số lượng Playlist hiển thị trên màn hình
+                tvPlaylistCount.text = "${playlistList.size} playlists"
+
                 playlistAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener {
-                // Nếu lỗi mạng, vẫn hiện nút Add New
+                // Nếu lỗi thì chỉ xóa list, không thêm item giả
                 playlistList.clear()
-                playlistList.add(Playlist(id = "ADD_NEW", name = "Add New Playlist"))
+                tvPlaylistCount.text = "0 playlists"
                 playlistAdapter.notifyDataSetChanged()
             }
     }

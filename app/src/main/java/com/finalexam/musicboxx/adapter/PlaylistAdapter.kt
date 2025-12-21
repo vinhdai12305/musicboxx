@@ -18,7 +18,8 @@ class PlaylistAdapter(
     class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView = itemView.findViewById(R.id.ivPlaylistCover)
         val name: TextView = itemView.findViewById(R.id.tvPlaylistName)
-        val count: TextView = itemView.findViewById(R.id.tvArtist) // View này sẽ dùng hiển thị Artist
+        // Đây là view hiển thị Artist/Count mà bạn muốn ẩn
+        val count: TextView = itemView.findViewById(R.id.tvArtist)
         val ivMore: ImageView = itemView.findViewById(R.id.ivMore)
     }
 
@@ -28,27 +29,35 @@ class PlaylistAdapter(
         return PlaylistViewHolder(view)
     }
 
-    // Trong Fragment, hàm createFakeData() KHÔNG cần thêm item "ADD_NEW" nữa.
-// Chỉ cần thêm playlist thật thôi.
-
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         val playlist = playlists[position]
 
-        // Chỉ cần code hiển thị ảnh và tên playlist
+        // 1. Hiển thị Tên Playlist
         holder.name.text = playlist.name
-        holder.count.text = "Hngle, Ari"
 
+        // 2. ẨN HOÀN TOÀN dòng Artist Name (Quan trọng)
+        // View.GONE: Ẩn đi và không chiếm chỗ trống trên màn hình
+        holder.count.visibility = View.GONE
+
+        // 3. Hiển thị ảnh (Sử dụng Glide)
         if (playlist.imageUrl.isNotEmpty()) {
-            Glide.with(holder.itemView.context).load(playlist.imageUrl).into(holder.img)
+            Glide.with(holder.itemView.context)
+                .load(playlist.imageUrl)
+                .placeholder(R.drawable.ic_logo) // Ảnh hiển thị khi đang load (tùy chọn)
+                .error(R.drawable.ic_logo)       // Ảnh hiển thị khi link lỗi
+                .into(holder.img)
         } else {
+            // Nếu không có link ảnh thì hiện ảnh logo mặc định
             holder.img.setImageResource(R.drawable.ic_logo)
         }
 
+        // 4. Bắt sự kiện click vào playlist
         holder.itemView.setOnClickListener { onClick(playlist) }
     }
 
     override fun getItemCount(): Int = playlists.size
 
+    // Hàm cập nhật dữ liệu mới (nếu cần dùng sau này)
     fun updateData(newPlaylists: List<Playlist>) {
         playlists.clear()
         playlists.addAll(newPlaylists)

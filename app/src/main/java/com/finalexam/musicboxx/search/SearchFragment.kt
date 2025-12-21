@@ -9,20 +9,21 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController // QUAN TRỌNG: Import để dùng nút Back
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.MainActivity
 import com.finalexam.musicboxx.R
-import com.finalexam.musicboxx.home.SongsAdapter
-import Song // Kiểm tra lại dòng này cho khớp với model Song của bạn
+import Song // Đảm bảo import đúng model Song của bạn
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.Normalizer
 import java.util.regex.Pattern
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
-    private lateinit var searchAdapter: SongsAdapter
+    // Sử dụng SearchAdapter (Adapter mới bạn vừa tạo) thay vì SongsAdapter
+    private lateinit var searchAdapter: SearchAdapter
+
     private val allSongsList = ArrayList<Song>()
     private val filteredList = ArrayList<Song>()
     private lateinit var edtSearch: EditText
@@ -30,46 +31,45 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Ánh xạ View
+        // 1. Ánh xạ View (Đảm bảo ID khớp với fragment_search.xml)
         edtSearch = view.findViewById(R.id.edtSearchInput)
         val rvResults = view.findViewById<RecyclerView>(R.id.rvSearchResults)
         val ivClear = view.findViewById<ImageView>(R.id.ivClear)
-        val ivBack = view.findViewById<ImageView>(R.id.ivBack) // Ánh xạ nút Back
+        val ivBack = view.findViewById<ImageView>(R.id.ivBack)
 
-        // 2. Xử lý nút Back (QUAN TRỌNG)
+        // 2. Xử lý nút Back
         ivBack.setOnClickListener {
-            // Ẩn bàn phím trước khi thoát cho đỡ lỗi giao diện
             hideKeyboard()
-            // Quay lại màn hình trước đó
             findNavController().popBackStack()
         }
 
-        // 3. Setup Adapter
-        searchAdapter = SongsAdapter(filteredList) { song ->
-            // Ẩn bàn phím khi chọn bài hát
+        // 3. Setup Adapter (Dùng SearchAdapter mới)
+        searchAdapter = SearchAdapter(filteredList) { song ->
+            // Khi chọn bài hát: Ẩn bàn phím & Phát nhạc
             hideKeyboard()
-            // Phát nhạc
             (activity as? MainActivity)?.playMusic(song.audioUrl)
         }
+
         rvResults.adapter = searchAdapter
+        // QUAN TRỌNG: LayoutManager để xếp dọc (Vertical) cho layout mới
         rvResults.layoutManager = LinearLayoutManager(context)
 
-        // 4. Tải dữ liệu
+        // 4. Tải dữ liệu từ Firebase
         fetchAllSongs()
 
-        // 5. Xử lý gõ chữ
+        // 5. Xử lý gõ chữ (Real-time Search)
         edtSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
                 filterSongs(query)
-                // Hiện nút X khi có chữ, ẩn khi rỗng
+                // Hiện nút X khi có chữ
                 ivClear.visibility = if (query.isNotEmpty()) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // 6. Xử lý nút Xóa text (dấu X)
+        // 6. Xử lý nút Xóa text
         ivClear.setOnClickListener {
             edtSearch.setText("")
             showKeyboard() // Xóa xong vẫn giữ bàn phím để gõ tiếp
@@ -103,28 +103,28 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val normalizedQuery = removeAccents(query)
 
         if (normalizedQuery.isEmpty()) {
-            // Khi ô tìm kiếm rỗng: Có thể để trống hoặc hiện bài gợi ý tùy ý bạn
+            // Khi rỗng thì không hiện gì cả (hoặc bạn có thể hiện lịch sử tìm kiếm)
         } else {
             for (song in allSongsList) {
                 val normalizedTitle = removeAccents(song.title)
                 val normalizedArtist = removeAccents(song.artist)
 
-                // Tìm kiếm tương đối (chứa từ khóa)
+                // Tìm kiếm tương đối
                 if (normalizedTitle.contains(normalizedQuery) || normalizedArtist.contains(normalizedQuery)) {
                     filteredList.add(song)
                 }
             }
         }
-        searchAdapter.notifyDataSetChanged()
+        // Cập nhật lại giao diện bằng hàm updateData của SearchAdapter
+        searchAdapter.updateData(filteredList)
     }
 
-    // Hàm bỏ dấu tiếng Việt (mạnh mẽ hơn)
+    // Hàm bỏ dấu tiếng Việt chuẩn
     private fun removeAccents(str: String?): String {
         if (str == null) return ""
         try {
             val temp = Normalizer.normalize(str, Normalizer.Form.NFD)
             val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
-            // Chuyển d -> d để tìm kiếm chính xác hơn
             return pattern.matcher(temp).replaceAll("").lowercase().replace("đ", "d")
         } catch (e: Exception) {
             return str.lowercase()
