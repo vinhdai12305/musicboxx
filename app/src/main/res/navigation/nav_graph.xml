@@ -72,6 +72,10 @@
         android:id="@+id/albumDetailFragment"
         android:name="com.finalexam.musicboxx.hometab.AlbumDetailFragment"
         android:label="Album Detail" />
+    <fragment
+        android:id="@+id/playSongFragment"
+        android:name="com.finalexam.musicboxx.hometab.PlaySongFragment"
+        android:label="Play Song" />
 
 
 </navigation>
