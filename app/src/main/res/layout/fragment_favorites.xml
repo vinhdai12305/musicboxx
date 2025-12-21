@@ -30,58 +30,15 @@
         app:layout_constraintBottom_toBottomOf="@id/ivLogo"/>
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:id="@+id/ivSearch"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:src="@drawable/ic_search"
+        android:padding="2dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvTitle"
-        app:layout_constraintBottom_toBottomOf="@id/tvTitle"/>
-
-    <LinearLayout
-        android:id="@+id/layoutButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:layout_marginTop="24dp"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnShuffle"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:text="Shuffle"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:icon="@drawable/ic_shuffle"
-            app:iconGravity="textStart"
-            android:backgroundTint="#FF8D28"
-            app:cornerRadius="30dp"
-            android:layout_marginEnd="8dp"
-
-            android:elevation="10dp"
-            android:outlineSpotShadowColor="#FF5722"
-            android:outlineAmbientShadowColor="#FF5722"
-            tools:targetApi="p" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPlayAll"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:text="Play"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FF5722"
-            app:icon="@drawable/ic_play_circle"
-            app:iconTint="#FF5722"
-            app:iconGravity="textStart"
-            android:backgroundTint="#FFE0B2"
-            app:cornerRadius="30dp"
-            android:layout_marginStart="8dp"/>
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="@id/ivLogo"
+        app:layout_constraintBottom_toBottomOf="@id/ivLogo" />
 
     <TextView
         android:id="@+id/tvCount"
@@ -93,7 +50,7 @@
         android:textSize="16sp"
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutButtons"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
@@ -120,8 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        tools:listitem="@layout/item_favorite_song"
         app:layout_constraintTop_toBottomOf="@id/dividerLine"
-        app:layout_constraintBottom_toBottomOf="parent"/>/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

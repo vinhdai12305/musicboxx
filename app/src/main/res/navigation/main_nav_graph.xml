@@ -24,4 +24,9 @@
         android:id="@+id/settingsFragment"
         android:name="com.finalexam.musicboxx.setting.SettingsFragment"
         android:label="Settings"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.finalexam.musicboxx.search.SearchFragment"
+        android:label="SearchFragment"
+         />
 </navigation>

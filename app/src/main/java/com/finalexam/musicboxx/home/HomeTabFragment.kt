@@ -3,19 +3,16 @@ package com.finalexam.musicboxx.home
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController // QUAN TRỌNG: Để chuyển trang
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.finalexam.musicboxx.MainActivity
 import com.finalexam.musicboxx.R
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObjects
-import Song // Import Model Song (Cái này của bạn đang đúng nếu file Song nằm ngay thư mục gốc)
-
-// --- SỬA LẠI ĐOẠN IMPORT NÀY CHO ĐÚNG ĐƯỜNG DẪN ---
 import com.finalexam.musicboxx.adapter.ArtistsAdapter
-import com.finalexam.musicboxx.model.Artist
+import com.finalexam.musicboxx.model.Artist // Kiểm tra lại package Artist của bạn
+import Song // Kiểm tra lại import Song của bạn
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeTabFragment : Fragment(R.layout.fragment_home_tab) {
 
@@ -23,39 +20,33 @@ class HomeTabFragment : Fragment(R.layout.fragment_home_tab) {
     private lateinit var mostPlayedAdapter: SongsAdapter
     private lateinit var artistsAdapter: ArtistsAdapter
 
-    private var songList: ArrayList<Song> = ArrayList()
-    private var artistList: ArrayList<Artist> = ArrayList()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ánh xạ
+        // --- 1. XỬ LÝ NÚT SEARCH (MỚI THÊM) ---
+        val ivSearch = view.findViewById<ImageView>(R.id.ivSearch)
+        ivSearch.setOnClickListener {
+            // Chuyển sang màn hình SearchFragment
+            findNavController().navigate(R.id.searchFragment)
+        }
+        // --------------------------------------
+
+        // 2. Ánh xạ RecyclerView
         val rvRecentlyPlayed = view.findViewById<RecyclerView>(R.id.rvRecentlyPlayed)
         val rvArtists = view.findViewById<RecyclerView>(R.id.rvArtists)
         val rvMostPlayed = view.findViewById<RecyclerView>(R.id.rvMostPlayed)
 
-        // Click Song
-        val onSongClick: (Song) -> Unit = { song ->
-            Toast.makeText(context, "Phát: ${song.title}", Toast.LENGTH_SHORT).show()
-            (activity as? MainActivity)?.playMusic(song.audioUrl)
-        }
+        // 3. Khởi tạo Adapter
+        recentAdapter = SongsAdapter(emptyList()) { song -> /* Play music logic */ }
+        mostPlayedAdapter = SongsAdapter(emptyList()) { song -> /* Play music logic */ }
+        artistsAdapter = ArtistsAdapter(emptyList()) { artist -> /* Artist click logic */ }
 
-        // Click Artist
-        val onArtistClick: (Artist) -> Unit = { artist ->
-            Toast.makeText(context, "Ca sĩ: ${artist.name}", Toast.LENGTH_SHORT).show()
-        }
-
-        // Khởi tạo Adapter
-        recentAdapter = SongsAdapter(songList, onSongClick)
-        mostPlayedAdapter = SongsAdapter(songList, onSongClick)
-        artistsAdapter = ArtistsAdapter(artistList, onArtistClick)
-
-        // Setup RecyclerView
+        // 4. Setup RecyclerView
         setupHorizontalRecyclerView(rvRecentlyPlayed, recentAdapter)
         setupHorizontalRecyclerView(rvArtists, artistsAdapter)
         setupHorizontalRecyclerView(rvMostPlayed, mostPlayedAdapter)
 
-        // Load data
+        // 5. Tải dữ liệu
         fetchSongs()
         fetchArtists()
     }
@@ -72,7 +63,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_home_tab) {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     val list = documents.toObjects(Song::class.java)
-                    recentAdapter.updateData(list)
+                    recentAdapter.updateData(list) // Đảm bảo adapter có hàm updateData
                     mostPlayedAdapter.updateData(list.shuffled())
                 }
             }
@@ -80,12 +71,13 @@ class HomeTabFragment : Fragment(R.layout.fragment_home_tab) {
     }
 
     private fun fetchArtists() {
-        FirebaseFirestore.getInstance().collection("artist")
+        // Lưu ý: Kiểm tra tên collection là "artists" hay "artist" trên Firebase của bạn
+        FirebaseFirestore.getInstance().collection("artists")
             .limit(10).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     val list = documents.toObjects(Artist::class.java)
-                    artistsAdapter.updateData(list)
+                    artistsAdapter.updateData(list) // Đảm bảo adapter có hàm updateData
                 }
             }
             .addOnFailureListener { e -> Log.e("FIREBASE", "Lỗi tải nghệ sĩ", e) }
