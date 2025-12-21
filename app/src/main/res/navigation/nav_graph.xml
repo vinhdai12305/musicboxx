@@ -68,6 +68,10 @@
         android:id="@+id/artistDetailsFragment"
         android:name="com.finalexam.musicboxx.hometab.ArtistDetailsFragment"
         android:label="Artist Details" />
+    <fragment
+        android:id="@+id/albumDetailFragment"
+        android:name="com.finalexam.musicboxx.hometab.AlbumDetailFragment"
+        android:label="Album Detail" />
 
 
 </navigation>

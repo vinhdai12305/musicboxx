@@ -11,25 +11,39 @@ import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.model.Album
 
 class AlbumsAdapter(
-    private var albums: List<Album>
+    private var albums: List<Album>,
+    private val onItemClick: (Album) -> Unit // Callback khi click vào item
 ) : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
 
     inner class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgAlbum: ImageView = itemView.findViewById(R.id.imgAlbum)
         val tvAlbumName: TextView = itemView.findViewById(R.id.tvAlbumName)
-        val tvArtist: TextView = itemView.findViewById(R.id.tvAlbumArtist)
+        val tvArtistInfo: TextView = itemView.findViewById(R.id.tvArtistInfo) // Đảm bảo ID này khớp xml item_album_grid
+        val tvSongCount: TextView = itemView.findViewById(R.id.tvSongCount)   // Đảm bảo ID này khớp xml item_album_grid
+
+        init {
+            itemView.setOnClickListener {
+                // Kiểm tra vị trí hợp lệ trước khi gọi click
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onItemClick(albums[adapterPosition])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_album_grid, parent, false) // Dùng layout ô vuông
+            .inflate(R.layout.item_album_grid, parent, false)
         return AlbumViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
         val album = albums[position]
         holder.tvAlbumName.text = album.name
-        holder.tvArtist.text = album.artist
+
+        // Giả lập dữ liệu Artist | Year vì model cũ chưa có
+        holder.tvArtistInfo.text = "${album.artist} | 2024"
+        holder.tvSongCount.text = "10 songs"
 
         Glide.with(holder.itemView.context)
             .load(album.imageUrl)
