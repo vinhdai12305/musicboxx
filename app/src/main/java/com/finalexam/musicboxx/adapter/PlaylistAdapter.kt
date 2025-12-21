@@ -18,7 +18,7 @@ class PlaylistAdapter(
     class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img: ImageView = itemView.findViewById(R.id.ivPlaylistCover)
         val name: TextView = itemView.findViewById(R.id.tvPlaylistName)
-        val count: TextView = itemView.findViewById(R.id.tvSongCount) // View này sẽ dùng hiển thị Artist
+        val count: TextView = itemView.findViewById(R.id.tvArtist) // View này sẽ dùng hiển thị Artist
         val ivMore: ImageView = itemView.findViewById(R.id.ivMore)
     }
 
@@ -28,46 +28,20 @@ class PlaylistAdapter(
         return PlaylistViewHolder(view)
     }
 
+    // Trong Fragment, hàm createFakeData() KHÔNG cần thêm item "ADD_NEW" nữa.
+// Chỉ cần thêm playlist thật thôi.
+
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         val playlist = playlists[position]
 
-        if (playlist.id == "ADD_NEW") {
-            // --- GIỮ NGUYÊN CODE NÚT ADD BẠN VỪA SỬA ---
-            holder.name.text = playlist.name
-            holder.count.visibility = View.GONE
-            holder.ivMore.visibility = View.GONE
+        // Chỉ cần code hiển thị ảnh và tên playlist
+        holder.name.text = playlist.name
+        holder.count.text = "Hngle, Ari"
 
-            holder.img.setImageResource(R.drawable.ic_add_circle)
-            holder.img.scaleType = ImageView.ScaleType.FIT_CENTER
-
-            // Padding để icon nằm gọn đẹp ở giữa
-            val paddingDp = 24
-            val density = holder.itemView.context.resources.displayMetrics.density
-            val paddingPixel = (paddingDp * density).toInt()
-            holder.img.setPadding(paddingPixel, paddingPixel, paddingPixel, paddingPixel)
-
+        if (playlist.imageUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context).load(playlist.imageUrl).into(holder.img)
         } else {
-            // --- CẬP NHẬT PHẦN HIỂN THỊ ARTIST ---
-            holder.count.visibility = View.VISIBLE
-            holder.ivMore.visibility = View.VISIBLE
-            holder.name.text = playlist.name
-
-            // --> SỬA Ở ĐÂY: Hiển thị tên Artist
-            // Nếu bạn muốn hiện cả artist và số bài hát thì dùng: "${playlist.artist} • ${playlist.songCount}"
-            holder.count.text = playlist.artist
-
-            // Reset lại ảnh thường
-            holder.img.scaleType = ImageView.ScaleType.CENTER_CROP
-            holder.img.setPadding(0, 0, 0, 0) // Quan trọng: Xóa padding
-
-            if (playlist.imageUrl.isNotEmpty()) {
-                Glide.with(holder.itemView.context)
-                    .load(playlist.imageUrl)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(holder.img)
-            } else {
-                holder.img.setImageResource(R.drawable.ic_launcher_background)
-            }
+            holder.img.setImageResource(R.drawable.ic_logo)
         }
 
         holder.itemView.setOnClickListener { onClick(playlist) }

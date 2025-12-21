@@ -52,7 +52,6 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 val tempList = ArrayList<Playlist>()
 
                 // 2. LUÔN LUÔN thêm nút "Add New" vào đầu tiên
-                tempList.add(Playlist(id = "ADD_NEW", name = "Add New Playlist"))
 
                 if (!documents.isEmpty) {
                     // 3. Convert dữ liệu Firebase và thêm vào sau
