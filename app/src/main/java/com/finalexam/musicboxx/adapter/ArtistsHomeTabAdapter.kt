@@ -12,7 +12,9 @@ import com.finalexam.musicboxx.model.Artist
 
 class ArtistsHomeTabAdapter(
     private var artistsList: List<Artist>,
-    private val onClick: (Artist) -> Unit
+    private val onClick: (Artist) -> Unit, // Logic cũ: click vào item
+    private val onMoreClick: (Artist) -> Unit // [MỚI]: Callback cho nút 3 chấm
+
 ) : RecyclerView.Adapter<ArtistsHomeTabAdapter.ArtistViewHolder>() {
 
     class ArtistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -31,10 +33,10 @@ class ArtistsHomeTabAdapter(
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
         val artist = artistsList[position]
 
+        // --- GIỮ NGUYÊN LOGIC CŨ ---
         holder.tvArtistName.text =
             if (artist.name.isNotBlank()) artist.name else "Unknown Artist"
 
-        // Vì model chỉ có name + image
         holder.tvArtistInfo.text = "Artist"
 
         Glide.with(holder.itemView.context)
@@ -44,9 +46,11 @@ class ArtistsHomeTabAdapter(
             .into(holder.imgArtist)
 
         holder.itemView.setOnClickListener { onClick(artist) }
+        // -----------------------------
 
+        // [MỚI]: Xử lý click nút 3 chấm
         holder.btnMore.setOnClickListener {
-            // TODO: popup menu sau
+            onMoreClick(artist)
         }
     }
 

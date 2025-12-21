@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.finalexam.musicboxx.R
@@ -26,20 +27,18 @@ class ArtistsFragmentHomeTab : Fragment(R.layout.fragment_artists_fragment_home_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // RecyclerView
+        // ---------- RecyclerView ----------
         rvArtists = view.findViewById(R.id.rvAllArtists)
         rvArtists.layoutManager = LinearLayoutManager(requireContext())
         rvArtists.setHasFixedSize(true)
 
-        // Other views
+        // ---------- Other views ----------
         progressBar = view.findViewById(R.id.progressBar)
         tvEmpty = view.findViewById(R.id.tvEmpty)
-
-        // Header views (BỔ SUNG)
         tvArtistCount = view.findViewById(R.id.tvArtistCount)
         tvSort = view.findViewById(R.id.tvSort)
 
-        // (Tuỳ chọn) click sort
+        // Sort (tạm thời)
         tvSort.setOnClickListener {
             Toast.makeText(requireContext(), "Sort by Date Added", Toast.LENGTH_SHORT).show()
         }
@@ -59,19 +58,36 @@ class ArtistsFragmentHomeTab : Fragment(R.layout.fragment_artists_fragment_home_
                 if (!documents.isEmpty) {
                     val artistList = documents.toObjects(Artist::class.java)
 
-                    // ✅ HIỂN THỊ TỔNG SỐ NGHỆ SĨ
+                    // Hiển thị tổng số nghệ sĩ
                     tvArtistCount.text = "${artistList.size} artists"
+                    tvEmpty.visibility = View.GONE
 
-                    adapter = ArtistsHomeTabAdapter(artistList) { artist ->
-                        Toast.makeText(
-                            requireContext(),
-                            "Clicked: ${artist.name}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    adapter = ArtistsHomeTabAdapter(
+                        artistsList = artistList,
+
+                        // ================= CLICK ITEM → NAVIGATION =================
+                        onClick = { artist ->
+                            val bundle = Bundle().apply {
+                                putString("artist_name", artist.name)
+                                putString("artist_image", artist.image)
+                            }
+
+                            requireActivity()
+                                .findNavController(R.id.nav_host_fragment)
+                                .navigate(R.id.artistDetailsFragment, bundle)
+                        },
+
+                        // ================= CLICK 3 CHẤM → BOTTOM SHEET =================
+                        onMoreClick = { artist ->
+                            val bottomSheet = ArtistOptionsBottomSheet(artist)
+                            bottomSheet.show(
+                                parentFragmentManager,
+                                "ArtistOptionsBottomSheet"
+                            )
+                        }
+                    )
 
                     rvArtists.adapter = adapter
-                    tvEmpty.visibility = View.GONE
                 } else {
                     tvArtistCount.text = "0 artists"
                     tvEmpty.visibility = View.VISIBLE
@@ -79,7 +95,9 @@ class ArtistsFragmentHomeTab : Fragment(R.layout.fragment_artists_fragment_home_
             }
             .addOnFailureListener { e ->
                 progressBar.visibility = View.GONE
-                Log.e("ArtistsTab", "Error loading artists", e)
+                tvArtistCount.text = "0 artists"
+                tvEmpty.visibility = View.VISIBLE
+                Log.e("ArtistsFragmentHomeTab", "Error loading artists", e)
             }
     }
 }

@@ -64,5 +64,10 @@
         android:name="com.finalexam.musicboxx.playlist.PlaylistDetailFragment"
         android:label="Playlist Detail"
         tools:layout="@layout/fragment_playlist_detail" />
+    <fragment
+        android:id="@+id/artistDetailsFragment"
+        android:name="com.finalexam.musicboxx.hometab.ArtistDetailsFragment"
+        android:label="Artist Details" />
+
 
 </navigation>
