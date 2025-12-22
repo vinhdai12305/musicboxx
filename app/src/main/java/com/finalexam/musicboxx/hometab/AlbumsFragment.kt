@@ -36,8 +36,10 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
         fetchAlbumsFromFirebase()
     }
 
-    // ================= OPEN ALBUM DETAIL (NAVIGATION) =================
     private fun openAlbumDetail(album: Album) {
+        // Kiểm tra an toàn trước khi chuyển màn hình
+        if (album.name.isEmpty()) return
+
         val bundle = Bundle().apply {
             putSerializable("album_data", album)
         }
@@ -47,24 +49,36 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
             .navigate(R.id.albumDetailFragment, bundle)
     }
 
-    // ================= FETCH ALBUMS =================
     private fun fetchAlbumsFromFirebase() {
         FirebaseFirestore.getInstance()
-            .collection("album")
+            .collection("album") // Đảm bảo tên collection trên Firebase là "album" (số ít hay nhiều?)
             .get()
             .addOnSuccessListener { documents ->
                 albumList.clear()
 
-                documents.forEach { document ->
-                    val album = document.toObject(Album::class.java)
-                    albumList.add(album)
+                for (document in documents) {
+                    try {
+                        // 1. Convert dữ liệu
+                        val album = document.toObject(Album::class.java)
+                        // 2. QUAN TRỌNG: Gán ID từ document vào object
+                        album.id = document.id
+
+                        // 3. Logic fix ảnh: Nếu album chưa có ảnh, thử lấy field khác (phòng hờ)
+                        if (album.imageUrl.isEmpty() && document.contains("imageUrl")) {
+                            album.imageUrl = document.getString("imageUrl") ?: ""
+                        }
+
+                        albumList.add(album)
+                    } catch (e: Exception) {
+                        Log.e("AlbumsFragment", "Lỗi convert album: ${document.id}", e)
+                    }
                 }
 
                 tvTotalAlbums.text = "${albumList.size} albums"
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
-                Log.e("AlbumsFragment", "Error getting albums", exception)
+                Log.e("AlbumsFragment", "Lỗi tải danh sách album", exception)
                 tvTotalAlbums.text = "0 albums"
             }
     }

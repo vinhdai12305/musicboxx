@@ -42,8 +42,8 @@ class AlbumsAdapter(
         holder.tvAlbumName.text = album.name
 
         // Giả lập dữ liệu Artist | Year vì model cũ chưa có
-        holder.tvArtistInfo.text = "${album.artist} | 2024"
-        holder.tvSongCount.text = "10 songs"
+        holder.tvArtistInfo.text = "${album.artist} | "
+        holder.tvSongCount.text = ""
 
         Glide.with(holder.itemView.context)
             .load(album.imageUrl)

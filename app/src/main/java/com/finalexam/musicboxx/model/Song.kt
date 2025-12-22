@@ -5,7 +5,8 @@ data class Song(
     var id: String = "",
     var title: String = "",
     var artist: String = "",
-
+    var album: String = "",
+    var name: String = "",
     // Map trường "audioUrl" (hoặc tên khác trên Firestore của bạn)
     @get:PropertyName("audioUrl")
     @set:PropertyName("audioUrl")
