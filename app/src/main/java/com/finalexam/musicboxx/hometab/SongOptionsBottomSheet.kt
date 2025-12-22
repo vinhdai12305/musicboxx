@@ -14,9 +14,11 @@ import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.finalexam.musicboxx.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.firestore.FirebaseFirestore
 
-// 1. Định nghĩa Interface để giao tiếp với Fragment bên ngoài
+// Interface giữ nguyên
 interface SongOptionListener {
+    fun onFavoriteClick(song: Song, isFavorite: Boolean)
     fun onPlayNext(song: Song)
     fun onAddToQueue(song: Song)
     fun onAddToPlaylist(song: Song)
@@ -27,8 +29,11 @@ interface SongOptionListener {
 
 class SongOptionsBottomSheet(
     private val song: Song,
-    private val listener: SongOptionListener // Nhận listener từ Fragment
+    private val listener: SongOptionListener
 ) : BottomSheetDialogFragment() {
+
+    private var isFavorite = false // Trạng thái hiện tại
+    private lateinit var btnHeart: ImageView // Khai báo biến global để dùng ở nhiều chỗ
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,80 +45,113 @@ class SongOptionsBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- BIND DATA HEADER ---
-        view.findViewById<TextView>(R.id.tvSheetTitle).text = song.title
-        view.findViewById<TextView>(R.id.tvSheetArtist).text = song.artist
-        val imgCover = view.findViewById<ImageView>(R.id.imgSheetCover)
+        // 1. Ánh xạ View
+        val tvTitle: TextView = view.findViewById(R.id.tvSheetTitle)
+        val tvArtist: TextView = view.findViewById(R.id.tvSheetArtist)
+        val imgCover: ImageView = view.findViewById(R.id.imgSheetCover)
 
+        // Gán vào biến global btnHeart để dùng trong hàm checkFavoriteStatus
+        btnHeart = view.findViewById(R.id.btnSheetHeart)
+
+        // 2. Đổ dữ liệu
+        tvTitle.text = song.title
+        tvArtist.text = song.artist
         Glide.with(this)
             .load(song.albumArtUrl)
             .placeholder(R.drawable.ic_launcher_background)
             .into(imgCover)
 
-        // --- XỬ LÝ SỰ KIỆN CÁC NÚT ---
+        // 3. --- QUAN TRỌNG: KIỂM TRA TRẠNG THÁI TIM TRÊN FIREBASE ---
+        // Để khi mở lên biết là Tim Cam hay Tim Xám
+        checkFavoriteStatus()
 
-        // 1. Play Next
-        view.findViewById<View>(R.id.optPlayNext).setOnClickListener {
-            listener.onPlayNext(song)
-            dismiss()
+        // 4. Xử lý click vào Tim
+        btnHeart.setOnClickListener {
+            isFavorite = !isFavorite // Đảo ngược trạng thái
+
+            updateHeartIcon() // Cập nhật hình ảnh dựa trên trạng thái mới
+
+            if (isFavorite) {
+                Toast.makeText(context, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show()
+            }
+
+            // Gửi sự kiện ra ngoài Fragment
+            listener.onFavoriteClick(song, isFavorite)
         }
 
-        // 2. Add to Queue
-        view.findViewById<View>(R.id.optAddQueue).setOnClickListener {
-            listener.onAddToQueue(song)
-            dismiss()
-        }
+        // --- CÁC NÚT KHÁC (GIỮ NGUYÊN) ---
+        setupOtherButtons(view)
+    }
 
-        // 3. Add to Playlist
-        view.findViewById<View>(R.id.optAddPlaylist).setOnClickListener {
-            listener.onAddToPlaylist(song)
-            dismiss()
-        }
+    // Hàm kiểm tra xem bài này đã có trong collection "favorites" chưa
+    private fun checkFavoriteStatus() {
+        val db = FirebaseFirestore.getInstance()
+        // Dùng logic ID giống hệt bên Fragment để đảm bảo khớp dữ liệu
+        val songId = song.id ?: song.title
 
-        // 4. Go to Album
-        view.findViewById<View>(R.id.optGoAlbum).setOnClickListener {
-            listener.onGoToAlbum(song)
-            dismiss()
-        }
+        db.collection("favorites").document(songId)
+            .get()
+            .addOnSuccessListener { document ->
+                // Nếu document tồn tại -> Bài hát đã được thích -> isFavorite = true
+                isFavorite = document.exists()
+                // Cập nhật giao diện ngay lập tức
+                updateHeartIcon()
+            }
+            .addOnFailureListener {
+                // Nếu lỗi mạng, mặc định là chưa thích
+                isFavorite = false
+                updateHeartIcon()
+            }
+    }
 
-        // 5. Go to Artist
-        view.findViewById<View>(R.id.optGoArtist).setOnClickListener {
-            listener.onGoToArtist(song)
-            dismiss()
+    // Hàm cập nhật hình ảnh icon dựa trên biến isFavorite
+    private fun updateHeartIcon() {
+        if (isFavorite) {
+            // Đang thích -> Hiện tim cam
+            btnHeart.setImageResource(R.drawable.ic_favorite_orange)
+        } else {
+            // Không thích -> Hiện tim xám
+            btnHeart.setImageResource(R.drawable.ic_favorite_gray)
         }
+        // Xóa filter màu cũ (nếu có) để hiển thị đúng màu gốc của ảnh png/xml
+        btnHeart.clearColorFilter()
+    }
 
-        // 6. Details (Xử lý trực tiếp tại đây)
+    // Tách code xử lý các nút khác xuống dưới cho gọn và dễ nhìn
+    private fun setupOtherButtons(view: View) {
+        view.findViewById<View>(R.id.optPlayNext).setOnClickListener { listener.onPlayNext(song); dismiss() }
+        view.findViewById<View>(R.id.optAddQueue).setOnClickListener { listener.onAddToQueue(song); dismiss() }
+        view.findViewById<View>(R.id.optAddPlaylist).setOnClickListener { listener.onAddToPlaylist(song); dismiss() }
+        view.findViewById<View>(R.id.optGoAlbum).setOnClickListener { listener.onGoToAlbum(song); dismiss() }
+        view.findViewById<View>(R.id.optGoArtist).setOnClickListener { listener.onGoToArtist(song); dismiss() }
+
         view.findViewById<View>(R.id.optDetails).setOnClickListener {
             showDetailsDialog()
-            // Không dismiss để user đọc xong tự tắt
         }
 
-        // 7. Ringtone (Cần quyền hệ thống, làm mẫu cơ bản)
         view.findViewById<View>(R.id.optRingtone).setOnClickListener {
             Toast.makeText(context, "Cần cấp quyền WRITE_SETTINGS để cài nhạc chuông", Toast.LENGTH_LONG).show()
-            // Code thực tế cần Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             dismiss()
         }
 
-        // 8. Blacklist (Ví dụ)
         view.findViewById<View>(R.id.optBlacklist).setOnClickListener {
             Toast.makeText(context, "Đã thêm vào danh sách đen", Toast.LENGTH_SHORT).show()
             dismiss()
         }
 
-        // 9. Share (Xử lý trực tiếp tại đây - Rất dễ)
         view.findViewById<View>(R.id.optShare).setOnClickListener {
             shareSong()
             dismiss()
         }
 
-        // 10. Delete (Hỏi xác nhận trước khi gọi listener)
         view.findViewById<View>(R.id.optDelete).setOnClickListener {
             showDeleteConfirmDialog()
         }
     }
 
-    // --- CÁC HÀM HỖ TRỢ LOGIC ---
+    // --- CÁC HÀM HỖ TRỢ (GIỮ NGUYÊN) ---
 
     private fun shareSong() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
@@ -137,7 +175,7 @@ class SongOptionsBottomSheet(
             .setTitle("Xóa bài hát")
             .setMessage("Bạn có chắc chắn muốn xóa bài hát '${song.title}' khỏi thiết bị không?")
             .setPositiveButton("Xóa") { _, _ ->
-                listener.onDeleteSong(song) // Gọi về Fragment để xóa thật
+                listener.onDeleteSong(song)
                 dismiss()
             }
             .setNegativeButton("Hủy", null)
