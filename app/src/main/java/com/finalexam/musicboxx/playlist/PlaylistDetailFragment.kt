@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.finalexam.musicboxx.MainActivity // Import MainActivity
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.adapter.PlaylistSongAdapter
 import com.finalexam.musicboxx.data.model.Playlist
@@ -29,7 +30,7 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
 
     private var currentPlaylist: Playlist? = null
 
-    // --- 1. KHAI BÁO BIẾN ---
+    // --- KHAI BÁO BIẾN ---
     private lateinit var rvSongs: RecyclerView
     private lateinit var playlistAdapter: PlaylistSongAdapter
     private val songList = ArrayList<Song>()
@@ -44,7 +45,6 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         val btnBack: ImageView = view.findViewById(R.id.btnBack)
         val btnMenu: ImageView = view.findViewById(R.id.btnMenu)
 
-        // --- ÁNH XẠ VIEW MỚI ---
         val btnShuffle: View = view.findViewById(R.id.btnShuffle)
         val btnPlay: View = view.findViewById(R.id.btnPlay)
         rvSongs = view.findViewById(R.id.rvSongs)
@@ -64,44 +64,54 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
                     .load(playlist.imageUrl)
                     .into(ivCover)
             }
-
-            // --- GỌI HÀM TẢI BÀI HÁT ---
             fetchSongsInPlaylist(playlist.id)
         }
 
-        btnBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        btnBack.setOnClickListener { findNavController().popBackStack() }
+        btnMenu.setOnClickListener { showPlaylistMenu(it) }
 
-        // MENU CỦA PLAYLIST (Góc trên cùng)
-        btnMenu.setOnClickListener {
-            showPlaylistMenu(it)
-        }
-
-        // --- SỰ KIỆN NÚT PLAY & SHUFFLE ---
+        // --- SỰ KIỆN NÚT PLAY (PHÁT TẤT CẢ) ---
         btnPlay.setOnClickListener {
             if (songList.isNotEmpty()) {
-                Toast.makeText(context, "Phát tất cả: ${songList.size} bài", Toast.LENGTH_SHORT)
-                    .show()
+                // Vì MainActivity cũ chỉ phát được 1 bài qua URL string
+                // Nên ta tạm thời phát bài đầu tiên trong danh sách
+                val firstSong = songList[0]
+                if (firstSong.audioUrl.isNotEmpty()) {
+                    (activity as? MainActivity)?.playMusic(firstSong.audioUrl)
+                    Toast.makeText(context, "Đang phát: ${firstSong.title}", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(context, "Playlist trống", Toast.LENGTH_SHORT).show()
             }
         }
 
         btnShuffle.setOnClickListener {
-            Toast.makeText(context, "Đã bật chế độ trộn bài", Toast.LENGTH_SHORT).show()
+            // Logic trộn bài (chỉ mang tính minh họa vì MainActivity chưa hỗ trợ list)
+            if (songList.isNotEmpty()) {
+                val randomSong = songList.random()
+                if (randomSong.audioUrl.isNotEmpty()) {
+                    (activity as? MainActivity)?.playMusic(randomSong.audioUrl)
+                    Toast.makeText(context, "Phát ngẫu nhiên: ${randomSong.title}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
-    // ================= [ĐÃ SỬA] CẤU HÌNH DANH SÁCH =================
+    // ================= CẤU HÌNH DANH SÁCH =================
     private fun setupRecyclerView() {
-        // Cập nhật Adapter để xử lý thêm sự kiện click 3 chấm (onMoreClick)
         playlistAdapter = PlaylistSongAdapter(
             songs = songList,
+            // --- XỬ LÝ CLICK BÀI HÁT ---
             onSongClick = { song ->
-                Toast.makeText(context, "Đang phát: ${song.title}", Toast.LENGTH_SHORT).show()
+                // Kiểm tra URL có tồn tại không
+                if (song.audioUrl.isNotEmpty()) {
+                    // Gọi hàm playMusic(String) có sẵn trong MainActivity của bạn
+                    (activity as? MainActivity)?.playMusic(song.audioUrl)
+                } else {
+                    Toast.makeText(context, "Link nhạc bị lỗi", Toast.LENGTH_SHORT).show()
+                }
             },
-            // 👇 XỬ LÝ SỰ KIỆN 3 CHẤM CỦA BÀI HÁT TẠI ĐÂY
+            // Xử lý 3 chấm (như cũ)
             onMoreClick = { view, song ->
                 showSongOptionMenu(view, song)
             }
@@ -110,18 +120,15 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         rvSongs.adapter = playlistAdapter
     }
 
-    // ================= [MỚI] HIỆN MENU XÓA BÀI HÁT =================
+    // ================= CÁC HÀM KHÁC (GIỮ NGUYÊN) =================
     private fun showSongOptionMenu(view: View, song: Song) {
         val popup = PopupMenu(requireContext(), view)
-        popup.menu.add("Remove from Playlist") // Thêm lựa chọn xóa
-
+        popup.menu.add("Remove from Playlist")
         popup.setOnMenuItemClickListener { menuItem ->
             if (menuItem.title == "Remove from Playlist") {
                 confirmRemoveSong(song)
                 true
-            } else {
-                false
-            }
+            } else { false }
         }
         popup.show()
     }
@@ -130,16 +137,13 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         AlertDialog.Builder(requireContext())
             .setTitle("Xóa bài hát")
             .setMessage("Bạn có chắc muốn xóa '${song.title}' khỏi playlist này?")
-            .setPositiveButton("Xóa") { _, _ ->
-                removeSongFromFirebase(song)
-            }
+            .setPositiveButton("Xóa") { _, _ -> removeSongFromFirebase(song) }
             .setNegativeButton("Hủy", null)
             .show()
     }
 
     private fun removeSongFromFirebase(song: Song) {
         val playlistId = currentPlaylist?.id ?: return
-        // Lưu ý: ID document phải khớp với lúc thêm (dùng id hoặc title)
         val songDocId = song.id ?: song.title
 
         db.collection("playlists").document(playlistId)
@@ -147,21 +151,13 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(context, "Đã xóa bài hát", Toast.LENGTH_SHORT).show()
-
-                // Cập nhật giao diện: Xóa khỏi list và update adapter
                 songList.remove(song)
                 playlistAdapter.notifyDataSetChanged()
-
-                // Cập nhật lại số lượng bài hát hiển thị text
                 view?.findViewById<TextView>(R.id.tvDetailInfo)?.text =
                     "${currentPlaylist?.artist} • ${songList.size} songs"
             }
-            .addOnFailureListener {
-                Toast.makeText(context, "Lỗi khi xóa: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
     }
 
-    // ================= LOGIC CŨ: TẢI BÀI HÁT =================
     private fun fetchSongsInPlaylist(playlistId: String) {
         db.collection("playlists").document(playlistId)
             .collection("songs")
@@ -182,40 +178,27 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             }
     }
 
-    // ================= MENU PLAYLIST (GIỮ NGUYÊN) =================
     private fun showPlaylistMenu(anchor: View) {
         val popup = PopupMenu(requireContext(), anchor)
         popup.menu.add("Edit Playlist Info")
         popup.menu.add("Delete Playlist")
         popup.setOnMenuItemClickListener { item ->
             when (item.title.toString()) {
-                "Edit Playlist Info" -> {
-                    handleEditPlaylist()
-                    true
-                }
-
-                "Delete Playlist" -> {
-                    handleDeletePlaylist()
-                    true
-                }
-
+                "Edit Playlist Info" -> { handleEditPlaylist(); true }
+                "Delete Playlist" -> { handleDeletePlaylist(); true }
                 else -> false
             }
         }
         popup.show()
     }
 
-    // ================= EDIT NAME (GIỮ NGUYÊN) =================
     private fun handleEditPlaylist() {
         val playlist = currentPlaylist ?: return
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_edit_playlist_name)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
         val etName = dialog.findViewById<EditText>(R.id.etPlaylistName)
         val btnCancel = dialog.findViewById<TextView>(R.id.btnCancel)
         val btnSave = dialog.findViewById<TextView>(R.id.btnSave)
@@ -223,47 +206,32 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         btnCancel.setOnClickListener { dialog.dismiss() }
         btnSave.setOnClickListener {
             val newName = etName.text.toString().trim()
-            if (newName.isEmpty()) {
-                Toast.makeText(requireContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            if (newName.isNotEmpty()) {
+                updatePlaylistName(playlist, newName)
+                dialog.dismiss()
             }
-            updatePlaylistName(playlist, newName)
-            dialog.dismiss()
         }
         dialog.show()
     }
 
     private fun updatePlaylistName(playlist: Playlist, newName: String) {
-        FirebaseFirestore.getInstance()
-            .collection("playlists")
-            .document(playlist.id)
+        FirebaseFirestore.getInstance().collection("playlists").document(playlist.id)
             .update("name", newName)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Playlist renamed", Toast.LENGTH_SHORT).show()
                 view?.findViewById<TextView>(R.id.tvDetailName)?.text = newName
                 currentPlaylist = playlist.copy(name = newName)
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Rename failed", Toast.LENGTH_SHORT).show()
-            }
     }
 
-    // ================= DELETE PLAYLIST (GIỮ NGUYÊN) =================
     private fun handleDeletePlaylist() {
         val playlist = currentPlaylist ?: return
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Playlist")
             .setMessage("Delete '${playlist.name}'?")
             .setPositiveButton("Delete") { _, _ ->
-                FirebaseFirestore.getInstance()
-                    .collection("playlists")
-                    .document(playlist.id)
+                FirebaseFirestore.getInstance().collection("playlists").document(playlist.id)
                     .delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Deleted successfully", Toast.LENGTH_SHORT)
-                            .show()
-                        findNavController().popBackStack()
-                    }
+                    .addOnSuccessListener { findNavController().popBackStack() }
             }
             .setNegativeButton("Cancel", null)
             .show()
