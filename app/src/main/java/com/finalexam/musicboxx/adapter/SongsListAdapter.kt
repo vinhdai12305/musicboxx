@@ -13,7 +13,8 @@ import Song // Đảm bảo import đúng model Song
 
 class SongsListAdapter(
     private var songs: List<Song>,
-    private val onSongClick: (Song) -> Unit
+    private val onSongClick: (Song) -> Unit,
+    private val onMoreClick: (Song) -> Unit // <--- 1. BỔ SUNG THAM SỐ NÀY
 ) : RecyclerView.Adapter<SongsListAdapter.SongViewHolder>() {
 
     inner class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,10 +37,13 @@ class SongsListAdapter(
 
             // 2. Click vào nút Play màu cam -> Cũng phát nhạc
 
-            // 3. Click vào nút 3 chấm (More) -> Hiện menu (Code tạm Toast)
+            // 3. Click vào nút 3 chấm (More) -> Hiện menu
             btnMore.setOnClickListener {
-                Toast.makeText(itemView.context, "More options clicked", Toast.LENGTH_SHORT).show()
-                // Sau này bạn có thể hiện BottomSheet hoặc PopupMenu ở đây
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    // <--- 2. GỌI HÀM CALLBACK KHI BẤM NÚT MORE
+                    onMoreClick(songs[position])
+                }
             }
         }
     }

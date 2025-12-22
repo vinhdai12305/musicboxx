@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_rounded"
+    android:paddingBottom="24dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardImageContainer"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgSheetCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvSheetTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Tên bài hát"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/btnSheetHeart"
+        app:layout_constraintStart_toEndOf="@id/cardImageContainer"
+        app:layout_constraintTop_toTopOf="@id/cardImageContainer" />
+
+    <TextView
+        android:id="@+id/tvSheetArtist"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Nghệ sĩ | 00:00 mins"
+        android:textColor="#808080"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@id/tvSheetTitle"
+        app:layout_constraintStart_toStartOf="@id/tvSheetTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvSheetTitle" />
+
+    <ImageView
+        android:id="@+id/btnSheetHeart"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/ic_favorite_gray"
+        app:layout_constraintBottom_toBottomOf="@id/cardImageContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cardImageContainer" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="#E0E0E0"
+        app:layout_constraintTop_toBottomOf="@+id/cardImageContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/optPlayNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Play Next"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_play_next" />
+
+            <TextView
+                android:id="@+id/optAddQueue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Add to Playing Queue"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_queue_music" />
+
+            <TextView
+                android:id="@+id/optAddPlaylist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Add to Playlist"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_add_to_playlist" />
+
+            <TextView
+                android:id="@+id/optGoAlbum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Go to Album"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_album" />
+
+            <TextView
+                android:id="@+id/optGoArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Go to Artist"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_artist" />
+
+            <TextView
+                android:id="@+id/optDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Details"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_detail" />
+
+            <TextView
+                android:id="@+id/optRingtone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Set as Ringtone"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_phone" />
+
+            <TextView
+                android:id="@+id/optBlacklist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Add to Blacklist"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_add_to_playlist" />
+
+            <TextView
+                android:id="@+id/optShare"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Share"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_share" />
+
+            <TextView
+                android:id="@+id/optDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="20dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp"
+                android:text="Delete from Device"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_delete" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

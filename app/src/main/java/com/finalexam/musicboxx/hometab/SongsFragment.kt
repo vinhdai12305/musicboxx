@@ -8,11 +8,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.finalexam.musicboxx.MainActivity // 1. Import MainActivity
+import com.finalexam.musicboxx.MainActivity
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.adapter.SongsListAdapter
-import Song // Import model Song
+import Song
 import com.google.firebase.firestore.FirebaseFirestore
+
+// IMPORT MỚI: Để dùng BottomSheet và Interface
+import com.finalexam.musicboxx.bottomsheet.SongOptionsBottomSheet
+import com.finalexam.musicboxx.bottomsheet.SongOptionListener
 
 class SongsFragment : Fragment(R.layout.fragment_songs) {
 
@@ -27,25 +31,26 @@ class SongsFragment : Fragment(R.layout.fragment_songs) {
         tvTotalSongs = view.findViewById(R.id.tvTotalSongs)
 
         // 2. Setup Adapter
-        adapter = SongsListAdapter(songList) { song ->
-            // --- XỬ LÝ KHI CLICK BÀI HÁT ---
-
-            // Kiểm tra link nhạc có trống không
-            if (song.audioUrl.isNotEmpty()) {
-                // Lấy Activity hiện tại và ép kiểu về MainActivity
-                val mainActivity = activity as? MainActivity
-
-                if (mainActivity != null) {
-                    // Gọi hàm playMusic với tham số là String (URL)
-                    // (Khớp với code MainActivity bạn vừa gửi)
-                    mainActivity.playMusic(song.audioUrl)
+        // CẬP NHẬT: Thêm onMoreClick, logic onSongClick giữ nguyên 100%
+        adapter = SongsListAdapter(songList,
+            onSongClick = { song ->
+                // --- (NỘI DUNG CŨ GIỮ NGUYÊN) ---
+                if (song.audioUrl.isNotEmpty()) {
+                    val mainActivity = activity as? MainActivity
+                    if (mainActivity != null) {
+                        mainActivity.playMusic(song.audioUrl)
+                    } else {
+                        Log.e("SongsFragment", "Lỗi: Activity không phải MainActivity")
+                    }
                 } else {
-                    Log.e("SongsFragment", "Lỗi: Activity không phải MainActivity")
+                    Toast.makeText(context, "Bài hát này chưa có link nhạc", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, "Bài hát này chưa có link nhạc", Toast.LENGTH_SHORT).show()
+            },
+            onMoreClick = { song ->
+                // --- (MỚI) XỬ LÝ KHI BẤM 3 CHẤM ---
+                showBottomSheet(song)
             }
-        }
+        )
 
         rvSongs.layoutManager = LinearLayoutManager(context)
         rvSongs.adapter = adapter
@@ -72,5 +77,38 @@ class SongsFragment : Fragment(R.layout.fragment_songs) {
             .addOnFailureListener { exception ->
                 Log.e("SongsFragment", "Lỗi tải dữ liệu: ", exception)
             }
+    }
+
+    // --- (MỚI) HÀM HIỂN THỊ BOTTOM SHEET VÀ XỬ LÝ SỰ KIỆN ---
+    private fun showBottomSheet(song: Song) {
+        val bottomSheet = SongOptionsBottomSheet(song, object : SongOptionListener {
+
+            override fun onPlayNext(song: Song) {
+                Toast.makeText(context, "Play Next: ${song.title}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onAddToQueue(song: Song) {
+                Toast.makeText(context, "Added to Queue: ${song.title}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onAddToPlaylist(song: Song) {
+                Toast.makeText(context, "Add to Playlist clicked", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onGoToAlbum(song: Song) {
+                Toast.makeText(context, "Go to Album clicked", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onGoToArtist(song: Song) {
+                Toast.makeText(context, "Go to Artist: ${song.artist}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onDeleteSong(song: Song) {
+                // Ví dụ logic xóa (cần code backend thực tế để xóa trên Firebase)
+                Toast.makeText(context, "Đã gửi yêu cầu xóa: ${song.title}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        bottomSheet.show(parentFragmentManager, "SongOptionsBottomSheet")
     }
 }
