@@ -123,7 +123,16 @@ class SongOptionsBottomSheet(
     private fun setupOtherButtons(view: View) {
         view.findViewById<View>(R.id.optPlayNext).setOnClickListener { listener.onPlayNext(song); dismiss() }
         view.findViewById<View>(R.id.optAddQueue).setOnClickListener { listener.onAddToQueue(song); dismiss() }
-        view.findViewById<View>(R.id.optAddPlaylist).setOnClickListener { listener.onAddToPlaylist(song); dismiss() }
+
+        // --- ĐÃ SỬA PHẦN NÀY ---
+        view.findViewById<View>(R.id.optAddPlaylist).setOnClickListener {
+            // Thay vì gọi listener cũ, ta mở BottomSheet mới để chọn Playlist
+            val choosePlaylistSheet = ChoosePlaylistBottomSheet(song)
+            choosePlaylistSheet.show(parentFragmentManager, "ChoosePlaylistBottomSheet")
+            dismiss()
+        }
+        // -----------------------
+
         view.findViewById<View>(R.id.optGoAlbum).setOnClickListener { listener.onGoToAlbum(song); dismiss() }
         view.findViewById<View>(R.id.optGoArtist).setOnClickListener { listener.onGoToArtist(song); dismiss() }
 
