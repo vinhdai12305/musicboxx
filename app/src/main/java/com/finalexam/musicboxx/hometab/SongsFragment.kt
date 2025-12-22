@@ -8,16 +8,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels // Import ViewModel chung
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.finalexam.musicboxx.MainActivity
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.adapter.SongsListAdapter
-import com.finalexam.musicboxx.bottomsheet.SongOptionListener
+import com.finalexam.musicboxx.bottomsheet.SongOptionListener // Import đúng package
 import com.finalexam.musicboxx.bottomsheet.SongOptionsBottomSheet
+import com.finalexam.musicboxx.home.HomeTabViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SongsFragment : Fragment(R.layout.fragment_songs) {
+
+    // Kết nối ViewModel chung để phát nhạc ExoPlayer
+    private val viewModel: HomeTabViewModel by activityViewModels()
 
     private lateinit var adapter: SongsListAdapter
     private val songList = mutableListOf<Song>()
@@ -29,14 +33,14 @@ class SongsFragment : Fragment(R.layout.fragment_songs) {
         val rvSongs = view.findViewById<RecyclerView>(R.id.rvSongs)
         tvTotalSongs = view.findViewById(R.id.tvTotalSongs)
 
-        // 1. Setup Adapter
-        adapter = SongsListAdapter(songList,
+        // Setup Adapter
+        adapter = SongsListAdapter(
+            songs = songList,
             onSongClick = { song ->
-                // Logic phát nhạc
-                if (song.audioUrl.isNotEmpty()) {
-                    (activity as? MainActivity)?.playMusic(song.audioUrl)
-                } else {
-                    Toast.makeText(context, "Bài hát chưa có link nhạc", Toast.LENGTH_SHORT).show()
+                // LOGIC PHÁT NHẠC: Gọi hàm playUserList của HomeTabViewModel
+                val index = songList.indexOf(song)
+                if (index != -1) {
+                    viewModel.playUserList(songList, index)
                 }
             },
             onMoreClick = { song ->
@@ -48,109 +52,82 @@ class SongsFragment : Fragment(R.layout.fragment_songs) {
         rvSongs.layoutManager = LinearLayoutManager(context)
         rvSongs.adapter = adapter
 
-        // 2. Tải dữ liệu
         fetchSongsFromFirebase()
     }
 
     private fun fetchSongsFromFirebase() {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("songs")
+        FirebaseFirestore.getInstance().collection("songs")
             .get()
             .addOnSuccessListener { documents ->
                 songList.clear()
                 for (document in documents) {
                     val song = document.toObject(Song::class.java)
-                    // Gán ID document vào object Song để sau này dễ xóa/sửa
+                    // Lưu ID document để dùng cho chức năng xóa/thích
                     song.id = document.id
                     songList.add(song)
                 }
-
                 tvTotalSongs?.text = "${songList.size} songs"
                 adapter.notifyDataSetChanged()
             }
-            .addOnFailureListener { e ->
-                Log.e("SongsFragment", "Lỗi tải dữ liệu", e)
+            .addOnFailureListener {
+                Toast.makeText(context, "Lỗi tải bài hát", Toast.LENGTH_SHORT).show()
             }
     }
 
+    // --- HÀM SHOW BOTTOM SHEET ĐÃ SỬA ---
     private fun showBottomSheet(song: Song) {
-        val bottomSheet = SongOptionsBottomSheet(song, object : SongOptionListener {
-
-            // --- XỬ LÝ TIM (YÊU THÍCH) ---
+        // Tạo listener TRƯỚC
+        val listener = object : SongOptionListener {
             override fun onFavoriteClick(song: Song, isFavorite: Boolean) {
+                // Xử lý Thêm/Xóa Favorite vào Firebase
                 val db = FirebaseFirestore.getInstance()
                 val songId = song.id ?: song.title
-
                 if (isFavorite) {
-                    // Thêm vào Favorites
                     db.collection("favorites").document(songId).set(song)
-                        .addOnSuccessListener {
-                            // Không cần Toast ở đây vì BottomSheet đã Toast rồi,
-                            // hoặc log để debug
-                            Log.d("Fav", "Đã lưu vào DB: ${song.title}")
-                        }
+                        .addOnSuccessListener { Toast.makeText(context, "Đã thích", Toast.LENGTH_SHORT).show() }
                 } else {
-                    // Xóa khỏi Favorites
                     db.collection("favorites").document(songId).delete()
-                        .addOnSuccessListener {
-                            Log.d("Fav", "Đã xóa khỏi DB: ${song.title}")
-                        }
+                        .addOnSuccessListener { Toast.makeText(context, "Bỏ thích", Toast.LENGTH_SHORT).show() }
                 }
             }
 
-            // --- CÁC NÚT CHỨC NĂNG KHÁC ---
             override fun onPlayNext(song: Song) {
-                Toast.makeText(context, "Ưu tiên phát bài tiếp theo", Toast.LENGTH_SHORT).show()
+                // Logic Play Next (nếu cần)
+                Toast.makeText(context, "Play Next: ${song.title}", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onAddToQueue(song: Song) {
-                Toast.makeText(context, "Đã thêm vào hàng chờ", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onAddToPlaylist(song: Song) {
-                Toast.makeText(context, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onGoToAlbum(song: Song) {
-                Toast.makeText(context, "Chuyển đến Album...", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onGoToArtist(song: Song) {
-                Toast.makeText(context, "Nghệ sĩ: ${song.artist}", Toast.LENGTH_SHORT).show()
-            }
-
-            // --- XỬ LÝ XÓA BÀI HÁT (ADMIN) ---
             override fun onDeleteSong(song: Song) {
-                // Xác nhận lần cuối trước khi xóa
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Xóa vĩnh viễn?")
-                    .setMessage("Bài hát '${song.title}' sẽ bị xóa khỏi cơ sở dữ liệu. Bạn có chắc không?")
-                    .setPositiveButton("Xóa") { _, _ ->
-                        deleteSongFromFirebase(song)
-                    }
-                    .setNegativeButton("Hủy", null)
-                    .show()
+                showDeleteDialog(song)
             }
-        })
+
+            // Các hàm chưa dùng thì để trống
+            override fun onAddToQueue(song: Song) {}
+            override fun onAddToPlaylist(song: Song) {}
+            override fun onGoToAlbum(song: Song) {}
+            override fun onGoToArtist(song: Song) {}
+        }
+
+        // Truyền listener vào constructor
+        val bottomSheet = SongOptionsBottomSheet(song, listener)
         bottomSheet.show(parentFragmentManager, "SongOptionsBottomSheet")
     }
 
-    // Hàm xóa bài hát thật sự khỏi Firebase
-    private fun deleteSongFromFirebase(song: Song) {
-        val db = FirebaseFirestore.getInstance()
-        val songId = song.id ?: song.title
-
-        db.collection("songs").document(songId)
-            .delete()
-            .addOnSuccessListener {
-                Toast.makeText(context, "Đã xóa bài hát", Toast.LENGTH_SHORT).show()
-                // Xóa khỏi list trên màn hình và cập nhật UI
-                songList.remove(song)
-                adapter.notifyDataSetChanged()
-                tvTotalSongs?.text = "${songList.size} songs"
+    private fun showDeleteDialog(song: Song) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Xóa bài hát?")
+            .setMessage("Bạn có chắc chắn muốn xóa '${song.title}' vĩnh viễn không?")
+            .setPositiveButton("Xóa") { _, _ ->
+                val db = FirebaseFirestore.getInstance()
+                val songId = song.id ?: song.title
+                db.collection("songs").document(songId).delete()
+                    .addOnSuccessListener {
+                        songList.remove(song)
+                        adapter.notifyDataSetChanged()
+                        tvTotalSongs?.text = "${songList.size} songs"
+                        Toast.makeText(context, "Đã xóa", Toast.LENGTH_SHORT).show()
+                    }
             }
-            .addOnFailureListener {
-                Toast.makeText(context, "Lỗi khi xóa: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
+            .setNegativeButton("Hủy", null)
+            .show()
     }
 }

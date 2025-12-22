@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 // --- QUAN TRỌNG: Import thư viện Media3 ---
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata // Import thêm cái này để set tên bài
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 // ------------------------------------------
@@ -35,9 +36,10 @@ class HomeTabViewModel(application: Application) : AndroidViewModel(application)
     val repeatMode: LiveData<Int> get() = _repeatMode
 
     // --- MEDIA3 PLAYER ---
-    private var exoPlayer: ExoPlayer? = null
+    var exoPlayer: ExoPlayer? = null // Có thể để public nếu cần truy cập từ Activity
+        private set
 
-    // Lưu playlist hiện tại để xử lý Next/Prev
+    // Lưu playlist hiện tại để xử lý Next/Prev và update UI
     private var currentPlaylist: List<Song> = emptyList()
 
     init {
@@ -68,43 +70,66 @@ class HomeTabViewModel(application: Application) : AndroidViewModel(application)
             }
         })
 
-        // 3. Tải nhạc
+        // 3. Tải nhạc mặc định từ Firebase
         loadSongs()
     }
 
     private fun updateCurrentSongInfo() {
+        // Lấy index bài đang hát trong Playlist
         val idx = exoPlayer?.currentMediaItemIndex ?: return
-        if (currentPlaylist.isNotEmpty() && idx < currentPlaylist.size) {
+
+        // Cập nhật LiveData để UI (MiniPlayer) thay đổi theo
+        if (currentPlaylist.isNotEmpty() && idx in currentPlaylist.indices) {
             _currentSong.value = currentPlaylist[idx]
         }
     }
 
-    // --- LOGIC PHÁT NHẠC ---
-    fun playTrack(song: Song, playlist: List<Song>) {
-        if (playlist.isEmpty()) return
+    // --- LOGIC PHÁT NHẠC CHÍNH (QUAN TRỌNG) ---
 
-        currentPlaylist = playlist
+    /**
+     * Hàm này dùng cho cả FavoritesFragment và HomeFragment.
+     * @param userSongs: Danh sách bài hát muốn phát.
+     * @param startIndex: Vị trí bài bắt đầu phát (index).
+     */
+    fun playUserList(userSongs: List<Song>, startIndex: Int) {
+        if (userSongs.isEmpty()) return
 
-        // Tìm vị trí bài hát
-        val index = playlist.indexOfFirst { it.title == song.title } // Nên dùng ID nếu có
-        if (index == -1) return
+        // 1. Cập nhật playlist hiện tại trong ViewModel
+        currentPlaylist = userSongs
 
-        // Setup Player
-        exoPlayer?.stop()
-        exoPlayer?.clearMediaItems()
+        // 2. Tạo MediaItem CÓ METADATA (Để hiện tên trên PlayerView của Main)
+        val mediaItems = userSongs.map { song ->
+            MediaItem.Builder()
+                .setUri(song.audioUrl)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(song.title)           // <-- Hiện tên bài
+                        .setArtist(song.artist ?: "Unknown") // <-- Hiện ca sĩ
+                        .build()
+                )
+                .build()
+        }
 
-        // Tạo MediaItem chuẩn Media3
-        val mediaItems = playlist.map { MediaItem.fromUri(it.audioUrl) }
-        exoPlayer?.setMediaItems(mediaItems)
+        // 3. Setup Player
+        exoPlayer?.apply {
+            stop()
+            clearMediaItems()
+            setMediaItems(mediaItems) // Nạp list mới
 
-        // Seek và Play
-        exoPlayer?.seekTo(index, 0)
-        exoPlayer?.prepare()
-        exoPlayer?.play()
+            // Khôi phục trạng thái Shuffle/Repeat cũ (nếu muốn)
+            shuffleModeEnabled = _isShuffle.value ?: false
+            repeatMode = _repeatMode.value ?: Player.REPEAT_MODE_OFF
 
-        // Khôi phục trạng thái Shuffle/Repeat
-        exoPlayer?.shuffleModeEnabled = _isShuffle.value ?: false
-        exoPlayer?.repeatMode = _repeatMode.value ?: Player.REPEAT_MODE_OFF
+            // Nhảy tới bài user chọn và phát
+            seekTo(startIndex, 0L)
+            prepare()
+            play()
+        }
+
+        // Cập nhật ngay lập tức bài hiện tại (để UI phản hồi nhanh hơn)
+        if (startIndex in userSongs.indices) {
+            _currentSong.value = userSongs[startIndex]
+        }
     }
 
     // --- CÁC NÚT ĐIỀU KHIỂN ---
@@ -124,10 +149,15 @@ class HomeTabViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun skipPrev() {
-        if (exoPlayer?.hasPreviousMediaItem() == true) {
-            exoPlayer?.seekToPrevious()
-        } else {
+        // Nếu vừa nghe đc vài giây thì quay lại đầu bài, nếu nghe lâu rồi thì back bài trước
+        if ((exoPlayer?.currentPosition ?: 0) > 3000) {
             exoPlayer?.seekTo(0)
+        } else {
+            if (exoPlayer?.hasPreviousMediaItem() == true) {
+                exoPlayer?.seekToPrevious()
+            } else {
+                exoPlayer?.seekTo(0)
+            }
         }
     }
 
