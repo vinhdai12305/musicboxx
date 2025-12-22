@@ -136,10 +136,6 @@ class SongOptionsBottomSheet(
             dismiss()
         }
 
-        view.findViewById<View>(R.id.optBlacklist).setOnClickListener {
-            Toast.makeText(context, "Đã thêm vào danh sách đen", Toast.LENGTH_SHORT).show()
-            dismiss()
-        }
 
         view.findViewById<View>(R.id.optShare).setOnClickListener {
             shareSong()
