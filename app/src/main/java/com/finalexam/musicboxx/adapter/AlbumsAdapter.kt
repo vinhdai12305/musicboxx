@@ -12,18 +12,17 @@ import com.finalexam.musicboxx.model.Album
 
 class AlbumsAdapter(
     private var albums: List<Album>,
-    private val onItemClick: (Album) -> Unit // Callback khi click vào item
+    private val onItemClick: (Album) -> Unit
 ) : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
 
     inner class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgAlbum: ImageView = itemView.findViewById(R.id.imgAlbum)
         val tvAlbumName: TextView = itemView.findViewById(R.id.tvAlbumName)
-        val tvArtistInfo: TextView = itemView.findViewById(R.id.tvArtistInfo) // Đảm bảo ID này khớp xml item_album_grid
-        val tvSongCount: TextView = itemView.findViewById(R.id.tvSongCount)   // Đảm bảo ID này khớp xml item_album_grid
+        val tvArtistInfo: TextView = itemView.findViewById(R.id.tvArtistInfo)
+        val tvSongCount: TextView = itemView.findViewById(R.id.tvSongCount)
 
         init {
             itemView.setOnClickListener {
-                // Kiểm tra vị trí hợp lệ trước khi gọi click
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     onItemClick(albums[adapterPosition])
                 }
@@ -40,10 +39,12 @@ class AlbumsAdapter(
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
         val album = albums[position]
         holder.tvAlbumName.text = album.name
+        holder.tvArtistInfo.text = "${album.artist}"
 
-        // Giả lập dữ liệu Artist | Year vì model cũ chưa có
-        holder.tvArtistInfo.text = "${album.artist} | "
-        holder.tvSongCount.text = ""
+        // --- SỬA PHẦN NÀY ---
+        // Logic: Nếu 0 bài -> "0 songs", 1 bài -> "1 song", nhiều bài -> "N songs"
+        val countText = if (album.songCount <= 1) "${album.songCount} song" else "${album.songCount} songs"
+        holder.tvSongCount.text = countText
 
         Glide.with(holder.itemView.context)
             .load(album.imageUrl)

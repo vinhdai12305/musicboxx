@@ -21,7 +21,7 @@ class PlaylistSongAdapter(
         val img: ImageView = itemView.findViewById(R.id.ivSongCover)
         val title: TextView = itemView.findViewById(R.id.tvSongTitle)
         val artist: TextView = itemView.findViewById(R.id.tvSongArtist)
-        val btnPlay: ImageView = itemView.findViewById(R.id.btnQuickPlay)
+
         val btnMore: ImageView = itemView.findViewById(R.id.btnMore)
     }
 
@@ -46,8 +46,7 @@ class PlaylistSongAdapter(
         // Sự kiện Click vào toàn bộ dòng -> Phát nhạc
         holder.itemView.setOnClickListener { onSongClick(song) }
 
-        // Sự kiện Click vào nút Play cam -> Phát nhạc
-        holder.btnPlay.setOnClickListener { onSongClick(song) }
+
 
         // 👇 BỔ SUNG: Xử lý sự kiện click vào 3 chấm
         holder.btnMore.setOnClickListener { view ->

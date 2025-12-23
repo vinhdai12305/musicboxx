@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="1 Albums  |  5 Songs  |  00:15:23 mins"
+                android:text=""
                 android:textColor="#888888"
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@id/tvDetailName"
