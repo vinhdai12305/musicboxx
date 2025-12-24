@@ -49,7 +49,7 @@
             app:layout_constraintTop_toTopOf="@id/imgLogo"
             app:tint="#000000" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layoutBanner"
             android:layout_width="match_parent"
             android:layout_height="180dp"
@@ -57,15 +57,21 @@
             android:layout_marginTop="24dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardUseCompatPadding="false"
+            app:strokeWidth="0dp"
+            app:strokeColor="@android:color/transparent"
             app:layout_constraintTop_toBottomOf="@id/imgLogo">
 
             <ImageView
                 android:id="@+id/imgBannerRight"
-                android:layout_width="368dp"
-                android:layout_height="188dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/banner_setting" />
-        </androidx.cardview.widget.CardView>
+                android:src="@drawable/banner_setting"
+                android:background="@android:color/transparent" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:layout_width="match_parent"

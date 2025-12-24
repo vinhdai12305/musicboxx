@@ -177,19 +177,6 @@
                 app:drawableStartCompat="@drawable/ic_phone" />
 
             <TextView
-                android:id="@+id/optBlacklist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="20dp"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="14dp"
-                android:text="Add to Blacklist"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                app:drawableStartCompat="@drawable/ic_add_to_playlist" />
-
-            <TextView
                 android:id="@+id/optShare"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

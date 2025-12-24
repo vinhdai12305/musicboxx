@@ -62,7 +62,7 @@ class SongsListAdapter(
 
         // Gán thông tin Nghệ sĩ | Thời lượng (Giả lập thời lượng vì model chưa có)
         // Kết quả sẽ là: "Son Tung M-TP | 03:50 mins"
-        holder.tvArtist.text = "${song.artist} | 03:50 mins"
+        holder.tvArtist.text = "${song.artist} "
 
         // Load ảnh bìa
         Glide.with(holder.itemView.context)
