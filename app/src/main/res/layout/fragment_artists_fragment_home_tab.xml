@@ -9,11 +9,12 @@
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
+        android:paddingHorizontal="18dp"
+        android:paddingTop="12dp"
         android:paddingBottom="8dp">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,26 +27,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0 artists"
+                android:textColor="#000000"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date Added"
+                android:textColor="#F37021"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#F37021"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- LINE PHÂN CÁCH -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="#E0E0E0"/>
     </LinearLayout>
 
     <!-- PROGRESS BAR (BỔ SUNG – FIX LỖI) -->

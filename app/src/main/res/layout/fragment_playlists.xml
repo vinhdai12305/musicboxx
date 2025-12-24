@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Recently Added"
-            android:textColor="#FF8A65"
+            android:textColor="#FF5722"
             android:textStyle="bold"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/tvPlaylistCount"

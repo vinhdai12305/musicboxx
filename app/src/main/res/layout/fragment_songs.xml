@@ -9,8 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
+        android:layout_height="65dp"
+        android:paddingHorizontal="18dp"
         android:paddingVertical="12dp"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Ascending"
             android:textColor="#FF7D26"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
