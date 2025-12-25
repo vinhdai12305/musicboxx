@@ -7,7 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation // Thêm import này để dùng Navigation.findNavController
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -75,16 +75,6 @@ class ArtistsFragmentHomeTab : Fragment(R.layout.fragment_artists_fragment_home_
                             }
 
                             try {
-                                // ------------------------------------------------------------------
-                                // 🔥 CÁCH KHẮC PHỤC TRIỆT ĐỂ CHO VIEW PAGER / TABS 🔥
-                                // ------------------------------------------------------------------
-
-                                // Cách 1: Thử dùng cách chuẩn
-                                // findNavController().navigate(R.id.action_global_artistDetailsFragment, bundle)
-
-                                // Cách 2 (MẠNH HƠN): Tìm NavController từ Activity cha
-                                // LƯU Ý: 'R.id.nav_host_fragment' là ID phổ biến trong activity_main.xml
-                                // Nếu code báo đỏ chữ nav_host_fragment, hãy mở activity_main.xml xem ID là gì rồi sửa lại ở đây.
                                 val mainNavController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                                 mainNavController.navigate(R.id.action_global_artistDetailsFragment, bundle)
 
