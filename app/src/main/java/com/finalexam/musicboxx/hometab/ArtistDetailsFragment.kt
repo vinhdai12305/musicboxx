@@ -1,6 +1,7 @@
 package com.finalexam.musicboxx.hometab
 
 import Song
+import android.os.Build // Bổ sung để check version Android
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels // 1. Import ViewModel
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +17,13 @@ import com.bumptech.glide.Glide
 import com.finalexam.musicboxx.R
 import com.finalexam.musicboxx.adapter.SongsListAdapter
 import com.finalexam.musicboxx.home.HomeTabViewModel
+import com.finalexam.musicboxx.model.Artist // Bổ sung import Artist
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.Serializable // Bổ sung
 
 class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
 
-    // 2. Kết nối ViewModel chung
+    // Kết nối ViewModel chung
     private val viewModel: HomeTabViewModel by activityViewModels()
 
     private var artistName: String = ""
@@ -31,11 +34,25 @@ class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Nhận dữ liệu String gửi từ màn hình trước
-        arguments?.let {
-            artistName = it.getString("artist_name", "")
-            artistImage = it.getString("artist_image", "")
+
+        // --- PHẦN BỔ SUNG SỬA LỖI NHẬN DỮ LIỆU ---
+        arguments?.let { bundle ->
+            // Vì bên SuggestedFragment gửi sang là Object "artist", nên ta phải nhận là Serializable
+            val artist = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getSerializable("artist", Artist::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                bundle.getSerializable("artist") as? Artist
+            }
+
+            // Nếu nhận được object, ta tách lấy tên và ảnh gán vào biến cũ của bạn
+            // để logic bên dưới không phải sửa gì cả.
+            if (artist != null) {
+                artistName = artist.name
+                artistImage = artist.image
+            }
         }
+        // ------------------------------------------
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,11 +61,9 @@ class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
         val btnBack: ImageView = view.findViewById(R.id.btnBack)
         val imgArtist: ImageView = view.findViewById(R.id.imgDetailArtist)
         val tvName: TextView = view.findViewById(R.id.tvDetailName)
-
-        // ID này phải trùng với file fragment_artist_details.xml
         val rvSongs: RecyclerView = view.findViewById(R.id.rvArtistSongs)
 
-        // UI
+        // UI (Giữ nguyên logic cũ)
         tvName.text = if (artistName.isNotEmpty()) artistName else "Unknown Artist"
 
         Glide.with(this)
@@ -60,19 +75,16 @@ class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
             findNavController().navigateUp()
         }
 
-        // 3. Setup Adapter (Giống hệt Album)
+        // Setup Adapter (Giữ nguyên logic cũ)
         adapter = SongsListAdapter(
             artistSongs,
             onSongClick = { song ->
-                // LOGIC PHÁT NHẠC
                 val index = artistSongs.indexOf(song)
                 if (index != -1) {
-                    // Nạp danh sách bài của ca sĩ này vào ExoPlayer
                     viewModel.playUserList(artistSongs, index)
                 }
             },
             onMoreClick = { song ->
-                // Xử lý menu 3 chấm (tạm thời hiện Toast)
                 Toast.makeText(context, "More: ${song.title}", Toast.LENGTH_SHORT).show()
             }
         )
@@ -80,7 +92,7 @@ class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
         rvSongs.layoutManager = LinearLayoutManager(requireContext())
         rvSongs.adapter = adapter
 
-        // 4. Tải bài hát từ Firebase
+        // Tải bài hát từ Firebase (Giữ nguyên logic cũ)
         loadSongsByArtist(artistName)
     }
 
@@ -89,10 +101,9 @@ class ArtistDetailsFragment : Fragment(R.layout.fragment_artist_details) {
 
         Log.d("ArtistDetail", "Đang tìm bài hát của ca sĩ: '$name'")
 
-        // Tìm các bài hát có field 'artist' trùng khớp
         FirebaseFirestore.getInstance()
             .collection("songs")
-            .whereEqualTo("artist", name.trim()) // trim() để xóa khoảng trắng thừa
+            .whereEqualTo("artist", name.trim())
             .get()
             .addOnSuccessListener { documents ->
                 artistSongs.clear()
