@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeTabFragment">
+
+    <fragment
+        android:id="@+id/homeTabFragment"
+        android:name="com.finalexam.musicboxx.home.HomeTabFragment"
+        android:label="Home"/>
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.finalexam.musicboxx.favorite.FavoritesFragment"
+        android:label="Favorites"/>
+
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.finalexam.musicboxx.playlist.PlaylistsFragment"
+        android:label="Playlists"/>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.finalexam.musicboxx.setting.SettingsFragment"
+        android:label="Settings"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.finalexam.musicboxx.search.SearchFragment"
+        android:label="SearchFragment"
+         />
+</navigation>

@@ -1,9 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Musicboxx" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.Musicboxx" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- Status bar trong suốt -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Cho phép layout vẽ lên status bar -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!-- Icon status bar màu trắng (phù hợp ảnh nền) -->
+        <item name="android:windowLightStatusBar">false</item>
+
     </style>
 
-    <style name="Theme.Musicboxx" parent="Base.Theme.Musicboxx" />
 </resources>

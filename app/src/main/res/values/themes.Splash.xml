@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Theme CHỈ dùng cho SplashActivity -->
+    <style name="Theme.Musicboxx.Splash"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- NỀN SPLASH -->
+        <item name="android:windowBackground">@drawable/ic_logo</item>
+
+        <!-- KHÔNG vẽ gì lên system bar -->
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+
+        <!-- TẮT animation để tránh nhấp nháy -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <!-- RẤT QUAN TRỌNG -->
+
+
+
+
+    </style>
+
+</resources>
